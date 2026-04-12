@@ -25,6 +25,7 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $frontendTemplate = Join-Path $repoRoot 'deploy/cloud-run/frontend-service.yaml'
 $cmsTemplate = Join-Path $repoRoot 'deploy/cloud-run/cms-service.yaml'
+$script:GCloudCommand = $null
 
 function Write-Step {
   param([string]$Message)
@@ -32,11 +33,62 @@ function Write-Step {
   Write-Host "`n==> $Message" -ForegroundColor Cyan
 }
 
+function ConvertTo-ProcessArgumentString {
+  param([string[]]$Arguments)
+
+  return ($Arguments | ForEach-Object {
+      if ($_ -match '[\s"]') {
+        '"' + ($_ -replace '"', '\"') + '"'
+      }
+      else {
+        $_
+      }
+    }) -join ' '
+}
+
+function Invoke-GCloudProcess {
+  param([string[]]$Arguments)
+
+  $startInfo = New-Object System.Diagnostics.ProcessStartInfo
+  $startInfo.FileName = $script:GCloudCommand
+  $startInfo.Arguments = ConvertTo-ProcessArgumentString -Arguments $Arguments
+  $startInfo.RedirectStandardOutput = $true
+  $startInfo.RedirectStandardError = $true
+  $startInfo.UseShellExecute = $false
+  $startInfo.CreateNoWindow = $true
+
+  $process = New-Object System.Diagnostics.Process
+  $process.StartInfo = $startInfo
+  $null = $process.Start()
+  $stdout = $process.StandardOutput.ReadToEnd()
+  $stderr = $process.StandardError.ReadToEnd()
+  $process.WaitForExit()
+
+  [PSCustomObject]@{
+    ExitCode = $process.ExitCode
+    StdOut = $stdout.Trim()
+    StdErr = $stderr.Trim()
+  }
+}
+
 function Require-Command {
   param([string]$Name)
 
-  if (-not (Get-Command $Name -ErrorAction SilentlyContinue)) {
+  if ($Name -eq 'gcloud') {
+    $gcloudCmd = Join-Path $env:LOCALAPPDATA 'Google\Cloud SDK\google-cloud-sdk\bin\gcloud.cmd'
+    if (Test-Path $gcloudCmd) {
+      $script:GCloudCommand = $gcloudCmd
+      return
+    }
+  }
+
+  $command = Get-Command $Name -ErrorAction SilentlyContinue
+  if (-not $command) {
     throw "Required command '$Name' is not installed or not on PATH."
+  }
+
+  if ($Name -eq 'gcloud') {
+    $script:GCloudCommand = $command.Source
   }
 }
 
@@ -49,9 +101,10 @@ function Invoke-GCloud {
   )
 
   Write-Host ("gcloud " + ($Arguments -join ' ')) -ForegroundColor DarkGray
-  $output = & gcloud @Arguments 2>&1
-  $exitCode = $LASTEXITCODE
-  $text = ($output | Out-String).Trim()
+  $result = Invoke-GCloudProcess -Arguments $Arguments
+  $exitCode = $result.ExitCode
+  $text = (@($result.StdOut, $result.StdErr) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }) -join [Environment]::NewLine
+  $text = $text.Trim()
 
   if ($exitCode -ne 0 -and -not $AllowFailure) {
     throw "gcloud command failed: gcloud $($Arguments -join ' ')`n$text"
@@ -67,8 +120,8 @@ function Invoke-GCloud {
 function Test-GCloud {
   param([string[]]$Arguments)
 
-  & gcloud @Arguments *> $null
-  return $LASTEXITCODE -eq 0
+  $result = Invoke-GCloudProcess -Arguments $Arguments
+  return $result.ExitCode -eq 0
 }
 
 function Ensure-ProjectRoleBinding {
@@ -277,9 +330,9 @@ Ensure-ServiceAccountRoleBinding -ServiceAccountEmail $deployerServiceAccountEma
 
 if ($SecretValuesFile) {
   Write-Step 'Creating or updating Secret Manager secrets from JSON file'
-  $secretValues = Get-Content $SecretValuesFile -Raw | ConvertFrom-Json -AsHashtable
-  foreach ($entry in $secretValues.GetEnumerator()) {
-    Ensure-Secret -Name $entry.Key -Value ([string]$entry.Value)
+  $secretValues = Get-Content $SecretValuesFile -Raw | ConvertFrom-Json
+  foreach ($property in $secretValues.PSObject.Properties) {
+    Ensure-Secret -Name $property.Name -Value ([string]$property.Value)
   }
 }
 

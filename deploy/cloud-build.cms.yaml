@@ -5,10 +5,7 @@ steps:
       - -f
       - strapi/Dockerfile
       - -t
-      - us-west1-docker.pkg.dev/sanenews/newsportal/cms:$COMMIT_SHA
-      - -t
       - us-west1-docker.pkg.dev/sanenews/newsportal/cms:latest
       - ./strapi
 images:
-  - us-west1-docker.pkg.dev/sanenews/newsportal/cms:$COMMIT_SHA
   - us-west1-docker.pkg.dev/sanenews/newsportal/cms:latest
