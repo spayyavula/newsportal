@@ -7,6 +7,9 @@ This repository is designed to run as two services on Google Cloud Run:
 
 The recommended production setup is:
 
+- `https://sanenews.net` for the public frontend
+- `https://www.sanenews.net` as an optional alias or redirect to the frontend
+- `https://cms.sanenews.net` for Strapi
 - Cloud Run for both services
 - Artifact Registry for container images
 - Cloud SQL for PostgreSQL for Strapi persistence
@@ -112,7 +115,6 @@ If you prefer not to use substitutions, replace `REGION` directly in the YAML fi
 Edit [deploy/cloud-run/cms-service.yaml](../deploy/cloud-run/cms-service.yaml) and set:
 
 - `__RUNTIME_SERVICE_ACCOUNT__`
-- `__CMS_PUBLIC_URL__`
 
 Then deploy:
 
@@ -132,7 +134,6 @@ After the service is live:
 Edit [deploy/cloud-run/frontend-service.yaml](../deploy/cloud-run/frontend-service.yaml) and set:
 
 - `__RUNTIME_SERVICE_ACCOUNT__`
-- `__CMS_PUBLIC_URL__`
 
 Then deploy:
 
@@ -181,7 +182,7 @@ CMS environment values:
 - `NODE_ENV=production`
 - `HOST=0.0.0.0`
 - `PORT=8080`
-- `PUBLIC_URL=https://cms-dot-...run.app`
+- `PUBLIC_URL=https://cms.sanenews.net`
 - `DATABASE_CLIENT=postgres`
 - `DATABASE_HOST=/cloudsql`
 - `DATABASE_PORT=5432`
@@ -210,16 +211,50 @@ Add these GitHub repository secrets before enabling deployment:
 - `GCP_WORKLOAD_IDENTITY_PROVIDER`
 - `GCP_DEPLOYER_SERVICE_ACCOUNT`
 - `GCP_RUNTIME_SERVICE_ACCOUNT`
-- `CMS_PUBLIC_URL`
 
 Notes:
 
 - `GCP_WORKLOAD_IDENTITY_PROVIDER` must be the full Google Cloud resource path using the numeric project number.
 - `GCP_DEPLOYER_SERVICE_ACCOUNT` is the service account GitHub Actions impersonates to deploy.
 - `GCP_RUNTIME_SERVICE_ACCOUNT` is the runtime identity injected into the Cloud Run manifests.
-- `CMS_PUBLIC_URL` is reused by both services so the frontend knows where Strapi lives and Strapi knows its public URL.
+- The deployment manifests now assume the CMS custom domain is `https://cms.sanenews.net`.
 
-## 11. Post-Deploy Checklist
+## 11. Map Custom Domains
+
+Use Cloud Run domain mappings after both services are deployed.
+
+### Frontend custom domain
+
+1. Open Google Cloud Console.
+2. Go to `Cloud Run`.
+3. Click the `newsportal-frontend` service.
+4. Open the `Manage Custom Domains` flow.
+5. If prompted, verify ownership of `sanenews.net` in Search Console.
+6. Add `sanenews.net` to the frontend service.
+7. Add `www.sanenews.net` to the frontend service if you want the alias.
+8. Copy the DNS records Google shows for each mapping.
+9. Go to your domain registrar DNS panel.
+10. Create the exact records Google requires.
+11. Wait for Google-managed certificate provisioning to complete.
+
+### CMS custom domain
+
+1. Stay in `Cloud Run`.
+2. Click the `newsportal-cms` service.
+3. Open the `Manage Custom Domains` flow.
+4. Add `cms.sanenews.net` to the CMS service.
+5. Copy the DNS records Google shows for that mapping.
+6. Add the exact DNS records at your registrar.
+7. Wait for the managed certificate to become active.
+
+### After domain mapping
+
+1. Confirm `https://sanenews.net` loads the frontend.
+2. Confirm `https://cms.sanenews.net/admin` loads Strapi admin.
+3. Keep the frontend configured to call `https://cms.sanenews.net`.
+4. If you add `www.sanenews.net`, either map it directly to the frontend or configure a redirect at your registrar or load balancer.
+
+## 12. Post-Deploy Checklist
 
 1. Confirm the frontend can reach Strapi over the public CMS URL.
 2. Create or refresh the Strapi API token and set it in the frontend service.

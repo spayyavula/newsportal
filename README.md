@@ -22,6 +22,7 @@ Common Ground is a Next.js prototype for an advertisement-free, non-sensational 
 ## Production deployment
 
 - Production target: Google Cloud Run for both the frontend and Strapi CMS
+- Production domain layout: `sanenews.net` for the frontend and `cms.sanenews.net` for Strapi
 - Frontend container: [Dockerfile](Dockerfile)
 - CMS container: [strapi/Dockerfile](strapi/Dockerfile)
 - Cloud Run manifests: [deploy/cloud-run/frontend-service.yaml](deploy/cloud-run/frontend-service.yaml) and [deploy/cloud-run/cms-service.yaml](deploy/cloud-run/cms-service.yaml)

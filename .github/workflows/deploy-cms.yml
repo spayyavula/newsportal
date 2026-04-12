@@ -46,7 +46,6 @@ jobs:
         run: |
           sed \
             -e "s|__RUNTIME_SERVICE_ACCOUNT__|${{ secrets.GCP_RUNTIME_SERVICE_ACCOUNT }}|g" \
-            -e "s|__CMS_PUBLIC_URL__|${{ secrets.CMS_PUBLIC_URL }}|g" \
             deploy/cloud-run/cms-service.yaml > /tmp/cms-service.yaml
 
       - name: Deploy CMS to Cloud Run

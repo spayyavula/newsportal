@@ -23,7 +23,7 @@ spec:
             - name: NODE_ENV
               value: production
             - name: NEXT_PUBLIC_STRAPI_URL
-              value: __CMS_PUBLIC_URL__
+              value: https://cms.sanenews.net
             - name: OPENAI_MODEL
               value: gpt-4.1-mini
             - name: OPENAI_BASE_URL
