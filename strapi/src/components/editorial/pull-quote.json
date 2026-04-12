@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_editorial_pull_quotes",
+  "info": {
+    "displayName": "Pull quote",
+    "description": "Highlighted quote within an article"
+  },
+  "attributes": {
+    "quote": {
+      "type": "text",
+      "required": true
+    },
+    "attribution": {
+      "type": "string",
+      "required": true
+    },
+    "role": {
+      "type": "string"
+    }
+  }
+}

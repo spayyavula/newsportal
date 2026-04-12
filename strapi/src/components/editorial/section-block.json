@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_editorial_section_blocks",
+  "info": {
+    "displayName": "Section block",
+    "description": "Rich section content inside an article"
+  },
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "body": {
+      "type": "richtext",
+      "required": true
+    }
+  }
+}

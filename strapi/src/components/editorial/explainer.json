@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_editorial_explainers",
+  "info": {
+    "displayName": "Explainer",
+    "description": "Context box with key takeaways"
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "body": {
+      "type": "text",
+      "required": true
+    },
+    "keyPoints": {
+      "type": "json",
+      "required": true
+    }
+  }
+}

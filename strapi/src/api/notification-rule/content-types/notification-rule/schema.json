@@ -1,0 +1,58 @@
+{
+  "kind": "collectionType",
+  "collectionName": "notification_rules",
+  "info": {
+    "singularName": "notification-rule",
+    "pluralName": "notification-rules",
+    "displayName": "Notification Rule",
+    "description": "Saved recurring briefing subscription for a reader"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "frequency": {
+      "type": "enumeration",
+      "enum": ["daily", "weekly", "breaking"],
+      "default": "daily"
+    },
+    "channel": {
+      "type": "enumeration",
+      "enum": ["in-app", "email"],
+      "default": "in-app"
+    },
+    "deliveryHour": {
+      "type": "integer",
+      "default": 8
+    },
+    "timezone": {
+      "type": "string",
+      "default": "UTC"
+    },
+    "instruction": {
+      "type": "text"
+    },
+    "lastSentAt": {
+      "type": "datetime"
+    },
+    "preset": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::filter-preset.filter-preset"
+    },
+    "owner": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}

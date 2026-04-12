@@ -1,0 +1,52 @@
+{
+  "kind": "collectionType",
+  "collectionName": "reader_profiles",
+  "info": {
+    "singularName": "reader-profile",
+    "pluralName": "reader-profiles",
+    "displayName": "Reader Profile",
+    "description": "Saved assistant personalization profile for an authenticated reader"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "displayName": {
+      "type": "string"
+    },
+    "topicSlugs": {
+      "type": "json"
+    },
+    "storyTypes": {
+      "type": "json"
+    },
+    "maxReadMinutes": {
+      "type": "integer"
+    },
+    "includeKeywords": {
+      "type": "json"
+    },
+    "excludeKeywords": {
+      "type": "json"
+    },
+    "minSourceCount": {
+      "type": "integer",
+      "default": 1
+    },
+    "onlyFeatured": {
+      "type": "boolean",
+      "default": false
+    },
+    "deliveryStyle": {
+      "type": "enumeration",
+      "enum": ["briefing", "mixed", "deep-dive"],
+      "default": "mixed"
+    },
+    "owner": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}

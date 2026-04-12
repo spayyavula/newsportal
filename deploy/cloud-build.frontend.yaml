@@ -1,0 +1,14 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -f
+      - Dockerfile
+      - -t
+      - us-west1-docker.pkg.dev/sanenews/newsportal/frontend:$COMMIT_SHA
+      - -t
+      - us-west1-docker.pkg.dev/sanenews/newsportal/frontend:latest
+      - .
+images:
+  - us-west1-docker.pkg.dev/sanenews/newsportal/frontend:$COMMIT_SHA
+  - us-west1-docker.pkg.dev/sanenews/newsportal/frontend:latest

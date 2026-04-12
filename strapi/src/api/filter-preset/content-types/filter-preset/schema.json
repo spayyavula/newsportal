@@ -1,0 +1,60 @@
+{
+  "kind": "collectionType",
+  "collectionName": "filter_presets",
+  "info": {
+    "singularName": "filter-preset",
+    "pluralName": "filter-presets",
+    "displayName": "Filter Preset",
+    "description": "Reusable assistant filter bundle owned by a reader"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "topicSlugs": {
+      "type": "json"
+    },
+    "storyTypes": {
+      "type": "json"
+    },
+    "maxReadMinutes": {
+      "type": "integer"
+    },
+    "includeKeywords": {
+      "type": "json"
+    },
+    "excludeKeywords": {
+      "type": "json"
+    },
+    "minSourceCount": {
+      "type": "integer",
+      "default": 1
+    },
+    "onlyFeatured": {
+      "type": "boolean",
+      "default": false
+    },
+    "deliveryStyle": {
+      "type": "enumeration",
+      "enum": ["briefing", "mixed", "deep-dive"],
+      "default": "mixed"
+    },
+    "isDefault": {
+      "type": "boolean",
+      "default": false
+    },
+    "owner": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}

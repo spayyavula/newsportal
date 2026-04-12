@@ -1,0 +1,53 @@
+name: Deploy CMS
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "strapi/**"
+      - "deploy/cloud-run/cms-service.yaml"
+      - "deploy/cloud-build.cms.yaml"
+      - ".github/workflows/deploy-cms.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  GCP_PROJECT_ID: sanenews
+  GCP_REGION: us-west1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_DEPLOYER_SERVICE_ACCOUNT }}
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.GCP_PROJECT_ID }}
+
+      - name: Build CMS image
+        run: gcloud builds submit --project "$GCP_PROJECT_ID" --config deploy/cloud-build.cms.yaml .
+
+      - name: Render CMS service manifest
+        shell: bash
+        run: |
+          sed \
+            -e "s|__RUNTIME_SERVICE_ACCOUNT__|${{ secrets.GCP_RUNTIME_SERVICE_ACCOUNT }}|g" \
+            -e "s|__CMS_PUBLIC_URL__|${{ secrets.CMS_PUBLIC_URL }}|g" \
+            deploy/cloud-run/cms-service.yaml > /tmp/cms-service.yaml
+
+      - name: Deploy CMS to Cloud Run
+        run: gcloud run services replace /tmp/cms-service.yaml --project "$GCP_PROJECT_ID" --region "$GCP_REGION"

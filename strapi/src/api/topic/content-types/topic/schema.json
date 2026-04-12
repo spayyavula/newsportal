@@ -1,0 +1,58 @@
+{
+  "kind": "collectionType",
+  "collectionName": "topics",
+  "info": {
+    "singularName": "topic",
+    "pluralName": "topics",
+    "displayName": "Topic",
+    "description": "Coverage beats for the portal"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
+    "kicker": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "landingIntro": {
+      "type": "text",
+      "required": true
+    },
+    "editorialFocus": {
+      "type": "text",
+      "required": true
+    },
+    "keyQuestions": {
+      "type": "json",
+      "required": true
+    },
+    "coverageFocus": {
+      "type": "json",
+      "required": true
+    },
+    "cadence": {
+      "type": "string",
+      "required": true
+    },
+    "articles": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::article.article",
+      "mappedBy": "topic"
+    }
+  }
+}
