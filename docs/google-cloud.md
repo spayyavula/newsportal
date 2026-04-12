@@ -16,6 +16,57 @@ The recommended production setup is:
 - Secret Manager for runtime secrets
 - Optional Cloud Storage for Strapi uploads later
 
+## 0. One-Command Bootstrap Option
+
+If you prefer automation over manual console setup, use [scripts/setup-sanenews-gcp.ps1](../scripts/setup-sanenews-gcp.ps1).
+
+It can:
+
+- enable required Google Cloud APIs
+- create the runtime and deployer service accounts
+- create Artifact Registry if missing
+- create the GitHub Actions Workload Identity pool and provider
+- bind IAM roles for GitHub Actions and Cloud Run
+- optionally create Secret Manager secrets from a JSON file
+- optionally deploy both Cloud Run services from the repository manifests
+- optionally create Cloud Run domain mappings and print DNS records
+- optionally set GitHub Actions secrets if `gh` is installed and authenticated
+
+Example:
+
+```powershell
+.\scripts\setup-sanenews-gcp.ps1 `
+  -SecretValuesFile .\scripts\gcp-secrets.json `
+  -DeployServices `
+  -CreateDomainMappings `
+  -ConfigureGitHubSecrets
+```
+
+Example secret JSON file:
+
+```json
+{
+  "STRAPI_API_TOKEN": "replace-me",
+  "NEXT_PREVIEW_SECRET": "replace-me",
+  "OPENAI_API_KEY": "replace-me",
+  "EXA_API_KEY": "replace-me",
+  "APP_KEYS": "replace-me-1,replace-me-2",
+  "API_TOKEN_SALT": "replace-me",
+  "ADMIN_JWT_SECRET": "replace-me",
+  "TRANSFER_TOKEN_SALT": "replace-me",
+  "JWT_SECRET": "replace-me",
+  "ENCRYPTION_KEY": "replace-me",
+  "DATABASE_PASSWORD": "replace-me"
+}
+```
+
+Notes:
+
+- The script requires `gcloud`.
+- `-ConfigureGitHubSecrets` also requires `gh` authenticated to [https://github.com/spayyavula/newsportal](https://github.com/spayyavula/newsportal).
+- Cloud Run custom domain mapping is still a Google preview feature. For stricter production requirements, prefer a global external Application Load Balancer.
+- Domain ownership verification and DNS propagation can still block custom domain creation even when the script is used.
+
 ## 1. Prerequisites
 
 Install and authenticate the Google Cloud CLI:

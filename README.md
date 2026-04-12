@@ -27,6 +27,7 @@ Common Ground is a Next.js prototype for an advertisement-free, non-sensational 
 - CMS container: [strapi/Dockerfile](strapi/Dockerfile)
 - Cloud Run manifests: [deploy/cloud-run/frontend-service.yaml](deploy/cloud-run/frontend-service.yaml) and [deploy/cloud-run/cms-service.yaml](deploy/cloud-run/cms-service.yaml)
 - Cloud Build configs: [deploy/cloud-build.frontend.yaml](deploy/cloud-build.frontend.yaml) and [deploy/cloud-build.cms.yaml](deploy/cloud-build.cms.yaml)
+- PowerShell bootstrap: [scripts/setup-sanenews-gcp.ps1](scripts/setup-sanenews-gcp.ps1)
 - Full deployment guide: [docs/google-cloud.md](docs/google-cloud.md)
 
 ## Pages included
