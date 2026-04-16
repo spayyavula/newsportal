@@ -220,12 +220,12 @@ export async function loginReader(email: string, password: string) {
 }
 
 export async function registerReader(name: string, email: string, password: string) {
-  const username = email.split("@")[0] || name;
+  const username = name?.trim() || email.split("@")[0];
   return strapiRequest<StrapiAuthResponse>(
     "/api/auth/local/register",
     {
       method: "POST",
-      body: JSON.stringify({ username, email, password, name }),
+      body: JSON.stringify({ username, email, password }),
     },
   );
 }

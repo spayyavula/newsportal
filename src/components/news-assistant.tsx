@@ -288,6 +288,21 @@ export function NewsAssistant({ topics }: NewsAssistantProps) {
     setMessage("");
     setIsLoading(true);
 
+    const excludeSlugs = Array.from(
+      new Set(
+        messages.flatMap((entry) =>
+          (entry.recommendations ?? []).map((item) => item.article.slug),
+        ),
+      ),
+    );
+    const excludeUrls = Array.from(
+      new Set(
+        messages.flatMap((entry) =>
+          (entry.externalResults ?? []).map((item) => item.url),
+        ),
+      ),
+    );
+
     try {
       const data = await fetchJson<NewsAssistantResponse>("/api/assistant", {
         method: "POST",
@@ -297,6 +312,8 @@ export function NewsAssistant({ topics }: NewsAssistantProps) {
         body: JSON.stringify({
           message: trimmed,
           profile,
+          excludeSlugs,
+          excludeUrls,
         }),
       });
 
@@ -409,6 +426,10 @@ export function NewsAssistant({ topics }: NewsAssistantProps) {
             <button className="button-primary" onClick={() => void handleAuthSubmit()} type="button">
               {authMode === "login" ? "Sign in" : "Create account"}
             </button>
+
+            {statusMessage ? (
+              <p className="assistant-status assistant-status-inline">{statusMessage}</p>
+            ) : null}
           </div>
         )}
 

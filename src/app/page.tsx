@@ -63,17 +63,22 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="page-section">
-        <div className="section-heading">
-          <p className="eyebrow">Trust signals</p>
-          <h2>What keeps this portal resistant to clickbait incentives</h2>
-        </div>
-        <div className="card-grid card-grid-three">
-          {editorialPrinciples.map((principle) => (
-            <article className="panel card" key={principle.title}>
-              <p className="card-kicker">{principle.kicker}</p>
-              <h3>{principle.title}</h3>
-              <p>{principle.description}</p>
+      <section className="page-section editorial-standards">
+        <header className="editorial-standards-heading">
+          <p className="editorial-standards-eyebrow">Editorial Standards</p>
+          <h2 className="editorial-standards-title">
+            The principles that govern how stories are reported and ranked.
+          </h2>
+        </header>
+        <div className="editorial-standards-grid">
+          {editorialPrinciples.map((principle, index) => (
+            <article className="editorial-standard" key={principle.title}>
+              <span className="editorial-standard-number">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <p className="editorial-standard-kicker">{principle.kicker}</p>
+              <h3 className="editorial-standard-title">{principle.title}</h3>
+              <p className="editorial-standard-desc">{principle.description}</p>
             </article>
           ))}
         </div>

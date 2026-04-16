@@ -1,3 +1,31 @@
+// --- Pay-per-read and Tipping API calls ---
+export async function incrementArticleView(articleId: number | string) {
+  if (!STRAPI_URL) return null;
+  const url = `${normalizeBaseUrl(STRAPI_URL)}/api/articles/${articleId}/increment-view`;
+  try {
+    const res = await fetch(url, { method: 'POST' });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function sendTip({ authorId, articleId, amount, currency, message }: { authorId: number | string, articleId: number | string, amount: number, currency: string, message?: string }) {
+  if (!STRAPI_URL) return null;
+  const url = `${normalizeBaseUrl(STRAPI_URL)}/api/tips/create`;
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ authorId, articleId, amount, currency, message }),
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
 import "server-only";
 import {
   articles as fallbackArticles,

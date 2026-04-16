@@ -14,7 +14,7 @@ export function ArticleContentBlocks({ blocks }: ArticleContentBlocksProps) {
       {blocks.map((block, index) => {
         if (block.type === "section") {
           return (
-            <section className="article-section-block" key={`${block.heading}-${index}`}>
+            <section key={`${block.heading}-${index}`} className="article-section-block">
               <h2>{block.heading}</h2>
               <div dangerouslySetInnerHTML={{ __html: block.body }} />
             </section>
@@ -23,7 +23,7 @@ export function ArticleContentBlocks({ blocks }: ArticleContentBlocksProps) {
 
         if (block.type === "pull-quote") {
           return (
-            <figure className="article-pull-quote" key={`${block.quote}-${index}`}>
+            <figure key={`${block.quote}-${index}`} className="article-pull-quote">
               <blockquote>{block.quote}</blockquote>
               <figcaption>
                 {block.attribution}
@@ -34,11 +34,11 @@ export function ArticleContentBlocks({ blocks }: ArticleContentBlocksProps) {
         }
 
         return (
-          <aside className="article-explainer" key={`${block.title}-${index}`}>
-            <p className="card-kicker">Explainer</p>
+          <aside key={`${block.title}-${index}`} className="article-explainer">
+            <p className="eyebrow">Explainer</p>
             <h2>{block.title}</h2>
             <p>{block.body}</p>
-            <ul className="plain-list">
+            <ul>
               {block.keyPoints.map((point) => (
                 <li key={point}>{point}</li>
               ))}

@@ -49,6 +49,16 @@
       "relation": "oneToMany",
       "target": "api::article.article",
       "mappedBy": "author"
+    },
+    "earnings": {
+      "type": "decimal",
+      "default": 0
+    },
+    "tips": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::tip.tip",
+      "mappedBy": "author"
     }
   }
 }

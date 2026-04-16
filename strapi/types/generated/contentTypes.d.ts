@@ -469,11 +469,13 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Required;
     summary: Schema.Attribute.Text & Schema.Attribute.Required;
+    tips: Schema.Attribute.Relation<'oneToMany', 'api::tip.tip'>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     topic: Schema.Attribute.Relation<'manyToOne', 'api::topic.topic'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    views: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
   };
 }
 
@@ -497,6 +499,7 @@ export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     credentials: Schema.Attribute.Text & Schema.Attribute.Required;
+    earnings: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
     editorialPrinciples: Schema.Attribute.JSON & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -508,6 +511,7 @@ export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     role: Schema.Attribute.String & Schema.Attribute.Required;
     slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    tips: Schema.Attribute.Relation<'oneToMany', 'api::tip.tip'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -647,6 +651,36 @@ export interface ApiReaderProfileReaderProfile
     publishedAt: Schema.Attribute.DateTime;
     storyTypes: Schema.Attribute.JSON;
     topicSlugs: Schema.Attribute.JSON;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiTipTip extends Struct.CollectionTypeSchema {
+  collectionName: 'tips';
+  info: {
+    description: 'Tips sent to authors by readers';
+    displayName: 'Tip';
+    pluralName: 'tips';
+    singularName: 'tip';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    amount: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    article: Schema.Attribute.Relation<'manyToOne', 'api::article.article'>;
+    author: Schema.Attribute.Relation<'manyToOne', 'api::author.author'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    currency: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::tip.tip'> &
+      Schema.Attribute.Private;
+    message: Schema.Attribute.Text;
+    publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1204,6 +1238,7 @@ declare module '@strapi/strapi' {
       'api::filter-preset.filter-preset': ApiFilterPresetFilterPreset;
       'api::notification-rule.notification-rule': ApiNotificationRuleNotificationRule;
       'api::reader-profile.reader-profile': ApiReaderProfileReaderProfile;
+      'api::tip.tip': ApiTipTip;
       'api::topic.topic': ApiTopicTopic;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

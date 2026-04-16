@@ -128,7 +128,7 @@ export async function searchPersonalizedNewsWithExa(
         query: buildSearchQuery(message, profile, topics),
         category: "news",
         type: "auto",
-        numResults: 6,
+        numResults: 15,
       }),
       cache: "no-store",
     });

@@ -69,6 +69,16 @@
       "relation": "manyToOne",
       "target": "api::topic.topic",
       "inversedBy": "articles"
+    },
+    "views": {
+      "type": "integer",
+      "default": 0
+    },
+    "tips": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::tip.tip",
+      "mappedBy": "article"
     }
   }
 }

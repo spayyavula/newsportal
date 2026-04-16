@@ -8,6 +8,8 @@ import type {
 export type NewsAssistantRequest = {
   message: string;
   profile: NewsAssistantProfile;
+  excludeSlugs?: string[];
+  excludeUrls?: string[];
 };
 
 export type AssistantRecommendation = {

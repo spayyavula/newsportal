@@ -26,13 +26,24 @@ export async function POST(request: Request) {
 
   const message = typeof payload?.message === "string" ? payload.message.trim() : "";
   const profile = sanitizeProfile(payload?.profile);
+  const excludeSlugs = new Set(
+    Array.isArray(payload?.excludeSlugs)
+      ? payload.excludeSlugs.filter((item): item is string => typeof item === "string")
+      : [],
+  );
+  const excludeUrls = new Set(
+    Array.isArray(payload?.excludeUrls)
+      ? payload.excludeUrls.filter((item): item is string => typeof item === "string")
+      : [],
+  );
 
   const [articles, topics] = await Promise.all([
     getArticles({ fallbackToLocal: true }),
     getTopics({ fallbackToLocal: true }),
   ]);
 
-  const externalResults = await searchPersonalizedNewsWithExa(message, profile, topics);
+  const rawExternalResults = await searchPersonalizedNewsWithExa(message, profile, topics);
+  const externalResults = rawExternalResults.filter((result) => !excludeUrls.has(result.url));
 
   if (externalResults.length > 0) {
     const llm = await generateLlmReplyFromExternalResults(message, profile, externalResults);
@@ -51,7 +62,9 @@ export async function POST(request: Request) {
     return NextResponse.json(response);
   }
 
-  const recommendations = rankPersonalizedArticles(articles, profile, message).slice(0, 4);
+  const recommendations = rankPersonalizedArticles(articles, profile, message)
+    .filter((entry) => !excludeSlugs.has(entry.article.slug))
+    .slice(0, 4);
   const llm = await generateLlmReply(message, profile, recommendations);
   const response: NewsAssistantResponse = {
     reply: llm.reply ?? buildAssistantReply(recommendations, profile, message, topics),

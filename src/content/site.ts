@@ -83,21 +83,21 @@ export const trustSignals = [
 export const editorialPrinciples = [
   {
     kicker: "Editorial charter",
-    title: "Headlines must inform before they persuade.",
+    title: "Headlines inform before they persuade.",
     description:
-      "We avoid fear-based framing, false urgency, and rhetorical headlines designed only to trigger clicks.",
+      "Reporting is framed to convey substance and proportion. Fear-based language, false urgency, and rhetorical headlines written to provoke clicks are not used.",
   },
   {
-    kicker: "Clear sourcing",
-    title: "Readers should see where the reporting comes from.",
+    kicker: "Transparent sourcing",
+    title: "Every claim is traceable to its origin.",
     description:
-      "Articles cite public records, interviews, and documents directly so readers can inspect evidence rather than trust a vague summary.",
+      "Stories link directly to public records, primary documents, and named interviews so readers can verify the underlying evidence rather than rely on summary.",
   },
   {
     kicker: "Public-interest ranking",
-    title: "The homepage is edited for civic value, not raw traffic.",
+    title: "The homepage is edited for civic value.",
     description:
-      "Story placement reflects consequence, relevance, and explanatory value instead of engagement spikes.",
+      "Placement reflects consequence, relevance, and explanatory depth. Stories are not promoted on the basis of engagement metrics or traffic performance.",
   },
 ];
 

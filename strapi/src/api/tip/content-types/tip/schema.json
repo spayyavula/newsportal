@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tips",
+  "info": {
+    "singularName": "tip",
+    "pluralName": "tips",
+    "displayName": "Tip",
+    "description": "Tips sent to authors by readers"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "amount": {
+      "type": "decimal",
+      "required": true
+    },
+    "currency": {
+      "type": "string",
+      "required": true
+    },
+    "message": {
+      "type": "text"
+    },
+    "author": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::author.author",
+      "inversedBy": "tips"
+    },
+    "article": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::article.article",
+      "inversedBy": "tips"
+    }
+  }
+}

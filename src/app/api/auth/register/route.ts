@@ -22,7 +22,15 @@ export async function POST(request: Request) {
       path: "/",
     });
     return response;
-  } catch {
-    return NextResponse.json({ error: "Registration failed." }, { status: 400 });
+  } catch (error) {
+    const raw = error instanceof Error ? error.message : "Registration failed.";
+    let detail = raw;
+    try {
+      const parsed = JSON.parse(raw);
+      detail = parsed?.error?.message ?? parsed?.message ?? raw;
+    } catch {
+      // raw wasn't JSON; keep as-is
+    }
+    return NextResponse.json({ error: detail }, { status: 400 });
   }
 }
