@@ -29,27 +29,18 @@ export async function generateMetadata({ params }: AuthorPageProps): Promise<Met
   };
 }
 
+export default async function AuthorPage({ params }: AuthorPageProps) {
+  const { isEnabled } = await draftMode();
+  const { slug } = await params;
+  const [author, articles] = await Promise.all([
+    getAuthorBySlug(slug),
+    getArticlesByAuthor(slug, { preview: isEnabled }),
+  ]);
 
-"use client";
-import { useEffect, useState } from "react";
+  if (!author) {
+    notFound();
+  }
 
-export default function AuthorPageWrapper(props: AuthorPageProps) {
-  return <AuthorPageClient {...props} />;
-}
-
-function AuthorPageClient({ params }: AuthorPageProps) {
-  const [author, setAuthor] = useState<any>(null);
-  const [articles, setArticles] = useState<any[]>([]);
-  useEffect(() => {
-    (async () => {
-      const { isEnabled } = await draftMode();
-      const { slug } = await params;
-      const a = await getAuthorBySlug(slug);
-      setAuthor(a);
-      setArticles(await getArticlesByAuthor(slug, { preview: isEnabled }));
-    })();
-  }, [params]);
-  if (!author) return null;
   return (
     <div className="page-stack">
       <section className="panel page-hero author-hero">
@@ -60,16 +51,13 @@ function AuthorPageClient({ params }: AuthorPageProps) {
           <span>{author.role}</span>
           <span>{author.credentials}</span>
         </div>
-        <div style={{ marginTop: 12, color: '#0a0', fontWeight: 500 }}>
-          <span>Earnings: ${Number(author.earnings || 0).toFixed(2)}</span>
-        </div>
       </section>
 
       <section className="content-grid">
         <article className="panel content-panel">
           <h2>Coverage areas</h2>
           <ul className="plain-list">
-            {author.coverageAreas.map((item: string) => (
+            {author.coverageAreas.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>
@@ -77,7 +65,7 @@ function AuthorPageClient({ params }: AuthorPageProps) {
         <article className="panel content-panel">
           <h2>Editorial principles</h2>
           <ul className="plain-list">
-            {author.editorialPrinciples.map((item: string) => (
+            {author.editorialPrinciples.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>
