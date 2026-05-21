@@ -17,6 +17,7 @@ In scope:
 - New `music-arts` topic with curatorial/appreciative framing.
 - New `format` field on articles (`'data-led' | 'light'`) that exempts `light` articles from mandatory McKinsey fields.
 - New curated `podcast-recommendation` content type, surfaced on topic pages and optionally inside the Daily Brief.
+- "Was this clear?" binary feedback widget at the end of each article (private — no public display; stored for editorial review).
 
 Out of scope (deliberate — do not creep in):
 
@@ -408,6 +409,7 @@ No new automated test harness — the project doesn't have one today. Manual ver
 3. Local dev (Strapi configured): publish one `daily-brief`, one `chart-exhibit`, one `podcast-recommendation`, and one `data-led` article with all McKinsey fields → all surfaces use CMS data. Then publish one `light` article in the `music-arts` topic → article page renders without exec-summary or lead exhibit. Then publish a podcast recommendation for that topic → topic page sidebar shows it.
 4. Article page renders an Observable Plot SVG that respects site typography. Inline `exhibit-reference` block renders an inline exhibit.
 5. OG smoke test: hit `/opengraph-image`, `/articles/<slug>/opengraph-image`, `/topics/<slug>/opengraph-image`, `/authors/<slug>/opengraph-image` directly. Each returns a 1200×630 PNG.
+6. Feedback smoke test (Section 12): load an article, click "Yes" → thank-you state, reload → widget hidden (localStorage). Load another article, click "No" → textarea appears, submit → thank-you. POST `/api/feedback/clarity` twice in <60s from the same source → second call returns 429.
 
 ---
 
@@ -429,3 +431,59 @@ The spec is one design but the work splits naturally into three phases. Each pha
 - **Phase C — Soft sections.** Sections 3.3, 3.7, 6.7, 6.8, and remaining fallback content. Ships music/arts topic, `format` field, podcast recommendations on topic pages, and the brief's optional `recommendedListen` slot.
 
 Phasing is a planning hint, not a contract — the writing-plans skill will turn this into the actual implementation plan.
+
+---
+
+## 12. "Was this clear?" reader feedback
+
+A small, private feedback channel for editorial signal — explicitly not an engagement metric. No public counts, no leaderboard, no comments thread. Goal: editors learn which pieces aren't landing.
+
+### 12.1 New Strapi content type: `article-feedback`
+
+Location: `strapi/src/api/article-feedback/`.
+
+| Field | Type | Constraints |
+|---|---|---|
+| `article` | relation to `article` | Required. |
+| `articleSlug` | string | Required (denormalised so we don't lose context if the article relation is later deleted). |
+| `clarity` | enum | Required. `yes` \| `no`. |
+| `comment` | text | Optional. Free text from reader when they answered `no`. Hard-capped server-side at 1000 chars. |
+| `submittedAt` | datetime | Required. Server-generated; do not trust client clocks. |
+| `userAgent` | string | Optional. Truncated to 200 chars. For sniffing out scripted spam, not for analytics. |
+
+No customer-identifying fields (no IP, no reader account relation). Treat the dataset as anonymous editorial telemetry. CRUD is restricted: public can `create`; only authenticated admin roles can `find`/`findOne`.
+
+### 12.2 New API endpoint: `POST /api/feedback/clarity`
+
+Location: `src/app/api/feedback/clarity/route.ts`. Validates payload (`slug: string`, `clarity: 'yes' | 'no'`, optional `comment: string`), looks up the article by slug, writes a row to Strapi `article-feedback`. Returns `{ ok: true }` on success.
+
+**Anti-abuse:**
+
+- Server-side validation only — no client-side trust.
+- Rate-limit per IP via an in-memory LRU keyed on `${ip}:${slug}` (max 1 submission per 60 seconds). The frontend also stores a `localStorage` flag `cg-feedback-clarity:<slug>` so the widget doesn't re-render on the same article in the same browser. The localStorage flag is UX hint, not security.
+- The `comment` field is sanitised (strip HTML, trim, length-cap) before storage.
+
+### 12.3 New `<ClarityFeedback>` component
+
+Location: `src/components/clarity-feedback.tsx`. Client component. Rendered once, near the bottom of the article page after `<SourceNotes>` (and after the article body for `format: 'light'` articles where source notes are skipped).
+
+States:
+
+1. **Question** — "Was this clear?" with two pill buttons "Yes" / "No".
+2. **No-branch** — clicking "No" reveals a small textarea ("What was unclear? *(optional)*") and a "Send feedback" button. Sending posts to the endpoint.
+3. **Yes-branch** — clicking "Yes" immediately posts and shows the thank-you state. No textarea, no other prompt.
+4. **Thank-you** — "Thanks — noted." Persistent until the page reloads. localStorage flag set so the widget doesn't re-appear if the reader returns.
+
+Visual treatment: small, recessed panel — deliberately understated. Style sits one notch quieter than the source notes section. No emoji, no progress bars, no celebrate-y micro-interactions.
+
+### 12.4 No aggregate display in v1
+
+There is intentionally no public display of feedback counts. No "82% found this clear", no thumbs-up totals on cards, nothing. Editors query Strapi admin directly to read the data until a weekly digest pipeline exists (deferred — likely lands when Spec 2's Resend integration ships).
+
+### 12.5 Fallback
+
+When Strapi is unconfigured, the endpoint short-circuits with HTTP 503 and the component swallows the error showing the thank-you state. Reader sees no broken experience; no false signal recorded.
+
+### 12.6 Phasing
+
+This sits inside **Phase B** of the implementation phasing — it's an article-page feature that depends on the article rendering refactor already in B.
