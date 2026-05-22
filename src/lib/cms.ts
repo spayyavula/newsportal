@@ -341,7 +341,6 @@ function mapArticle(entity: StrapiEntity): Article | null {
     (typeof body !== "string" && !fallback) ||
     (!Array.isArray(sources) && !fallback) ||
     (typeof featured !== "boolean" && !fallback) ||
-    (typeof deepDive !== "boolean" && !fallback) ||
     (typeof publishedOn !== "string" && !fallback) ||
     !author ||
     !topic
@@ -361,7 +360,7 @@ function mapArticle(entity: StrapiEntity): Article | null {
       ? sources.filter((item): item is string => typeof item === "string")
       : fallback!.sources,
     featured: typeof featured === "boolean" ? featured : fallback!.featured,
-    deepDive: typeof deepDive === "boolean" ? deepDive : fallback!.deepDive,
+    deepDive: typeof deepDive === "boolean" ? deepDive : (fallback?.deepDive ?? false),
     publishedOn: typeof publishedOn === "string" ? publishedOn : fallback!.publishedOn,
     author,
     topic,
@@ -395,14 +394,14 @@ export async function getFeaturedArticle(options: QueryOptions = {}) {
   return allArticles.find((article) => article.featured) ?? allArticles[0] ?? null;
 }
 
-export async function getDeepDiveArticle(options: QueryOptions = {}): Promise<Article | null> {
+export async function getDeepDiveArticle(
+  options: QueryOptions = {},
+  excludeSlug?: string,
+): Promise<Article | null> {
   const allArticles = await getArticles(options);
-  return allArticles.find((article) => article.deepDive) ?? null;
-}
-
-export async function getLatestArticles(limit = 3, options: QueryOptions = {}) {
-  const allArticles = await getArticles(options);
-  return allArticles.slice(0, limit);
+  return (
+    allArticles.find((article) => article.deepDive && article.slug !== excludeSlug) ?? null
+  );
 }
 
 export async function getArticleBySlug(slug: string, options: QueryOptions = {}) {
@@ -476,18 +475,19 @@ export async function getArticlesByTopic(slug: string, options: QueryOptions = {
 }
 
 export async function getHomepageData(options: QueryOptions = {}) {
-  const [anchorArticle, deepDiveCandidate, topics, dailyBrief, allArticles] = await Promise.all([
-    getFeaturedArticle(options),
-    getDeepDiveArticle(options),
+  const [allArticles, topics, dailyBrief] = await Promise.all([
+    getArticles(options),
     getTopics(options),
     getDailyBrief(options),
-    getArticles(options),
   ]);
 
+  const anchorArticle =
+    allArticles.find((article) => article.featured) ?? allArticles[0] ?? null;
+
   const deepDiveArticle =
-    deepDiveCandidate && anchorArticle && deepDiveCandidate.slug !== anchorArticle.slug
-      ? deepDiveCandidate
-      : null;
+    allArticles.find(
+      (article) => article.deepDive && article.slug !== anchorArticle?.slug,
+    ) ?? null;
 
   const excludedSlugs = new Set<string>();
   if (anchorArticle) excludedSlugs.add(anchorArticle.slug);
