@@ -107,6 +107,10 @@ function articleSearchText(article: Article) {
             return `${block.quote} ${block.attribution} ${block.role ?? ""}`;
           }
 
+          if (block.type === "exhibit-reference") {
+            return `${block.exhibit.title} ${block.exhibit.sourceNote}`;
+          }
+
           return `${block.title} ${stripHtml(block.body)} ${block.keyPoints.join(" ")}`;
         })
         .join(" "),

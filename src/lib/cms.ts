@@ -38,7 +38,9 @@ import type {
   ArticleBlock,
   Author,
   BriefItem,
+  ChartExhibit,
   DailyBrief,
+  SourceNote,
   Topic,
 } from "@/content/site";
 
@@ -139,6 +141,50 @@ function fallbackArticleBySlug(slug: string) {
   return fallbackArticles.find((article) => article.slug === slug) ?? null;
 }
 
+function mapChartExhibit(entity: StrapiEntity | null): ChartExhibit | null {
+  if (!entity) return null;
+
+  const figureNumber = entity.figureNumber;
+  const title = entity.title;
+  const chartType = entity.chartType;
+  const series = entity.series;
+  const sourceNote = entity.sourceNote;
+
+  if (
+    typeof figureNumber !== "number" ||
+    typeof title !== "string" ||
+    (chartType !== "line" &&
+      chartType !== "bar" &&
+      chartType !== "area" &&
+      chartType !== "dot" &&
+      chartType !== "stackedBar") ||
+    !Array.isArray(series) ||
+    typeof sourceNote !== "string"
+  ) {
+    return null;
+  }
+
+  return {
+    figureNumber,
+    title,
+    chartType,
+    series: series as ChartExhibit["series"],
+    xAxisLabel: typeof entity.xAxisLabel === "string" ? entity.xAxisLabel : undefined,
+    yAxisLabel: typeof entity.yAxisLabel === "string" ? entity.yAxisLabel : undefined,
+    sourceNote,
+  };
+}
+
+function mapSourceNote(entry: unknown): SourceNote | null {
+  if (!entry || typeof entry !== "object") return null;
+  const cast = entry as Record<string, unknown>;
+  if (typeof cast.text !== "string") return null;
+  return {
+    text: cast.text,
+    url: typeof cast.url === "string" && cast.url.trim().length > 0 ? cast.url : undefined,
+  };
+}
+
 function mapArticleBlocks(value: unknown, fallbackBlocks: ArticleBlock[] = []): ArticleBlock[] {
   if (!Array.isArray(value)) {
     return fallbackBlocks;
@@ -184,6 +230,16 @@ function mapArticleBlocks(value: unknown, fallbackBlocks: ArticleBlock[] = []): 
             title: block.title,
             body: block.body,
             keyPoints: block.keyPoints.filter((item): item is string => typeof item === "string"),
+          };
+        }
+      }
+
+      if (block.__component === "editorial.exhibit-reference") {
+        const exhibit = mapChartExhibit(unwrapRelation(block.exhibit));
+        if (exhibit) {
+          return {
+            type: "exhibit-reference" as const,
+            exhibit,
           };
         }
       }
@@ -340,6 +396,10 @@ function mapArticle(entity: StrapiEntity): Article | null {
   const sources = entity.sources;
   const featured = entity.featured;
   const deepDive = entity.deepDive;
+  const formatRaw = entity.format;
+  const executiveSummaryRaw = entity.executiveSummary;
+  const leadExhibitRaw = entity.leadExhibit;
+  const sourceNotesRaw = entity.sourceNotes;
   const publishedOn = entity.publishedOn;
   const author = mapAuthor(unwrapRelation(entity.author) ?? {}) ?? fallback?.author ?? null;
   const topic = mapTopic(unwrapRelation(entity.topic) ?? {}) ?? fallback?.topic ?? null;
@@ -373,6 +433,24 @@ function mapArticle(entity: StrapiEntity): Article | null {
       : fallback!.sources,
     featured: typeof featured === "boolean" ? featured : fallback!.featured,
     deepDive: typeof deepDive === "boolean" ? deepDive : (fallback?.deepDive ?? false),
+    format: formatRaw === "light" ? "light" : "data-led",
+    executiveSummary: Array.isArray(executiveSummaryRaw)
+      ? executiveSummaryRaw
+          .map((entry) =>
+            entry &&
+            typeof entry === "object" &&
+            typeof (entry as { text?: unknown }).text === "string"
+              ? (entry as { text: string }).text
+              : null,
+          )
+          .filter((item): item is string => Boolean(item))
+      : fallback?.executiveSummary,
+    leadExhibit: mapChartExhibit(unwrapRelation(leadExhibitRaw)) ?? fallback?.leadExhibit,
+    sourceNotes: Array.isArray(sourceNotesRaw)
+      ? sourceNotesRaw
+          .map(mapSourceNote)
+          .filter((item): item is SourceNote => Boolean(item))
+      : fallback?.sourceNotes,
     publishedOn: typeof publishedOn === "string" ? publishedOn : fallback!.publishedOn,
     author,
     topic,
@@ -441,6 +519,18 @@ function freshFallbackDailyBrief(): DailyBrief {
   // misconfigured CMS no longer surfaces as a visibly stale date — the
   // non-prod console.warn in fetchStrapi remains the dev-side signal.
   return { ...fallbackDailyBrief, publishedOn: new Date().toISOString() };
+}
+
+export async function getChartExhibit(
+  figureNumber: number,
+  options: QueryOptions = {},
+): Promise<ChartExhibit | null> {
+  const response = await fetchStrapi<StrapiListResponse<StrapiEntity>>(
+    `/api/chart-exhibits?filters[figureNumber][$eq]=${figureNumber}&pagination[limit]=1`,
+    options,
+  );
+  const first = response?.data?.[0];
+  return mapChartExhibit(first ?? null);
 }
 
 export async function getDailyBrief(options: QueryOptions = {}): Promise<DailyBrief> {
