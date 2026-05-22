@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_editorial_summary_bullets",
+  "info": {
+    "displayName": "Summary bullet",
+    "description": "One bullet in an article's executive summary"
+  },
+  "attributes": {
+    "text": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

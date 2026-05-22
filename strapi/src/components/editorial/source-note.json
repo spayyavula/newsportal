@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_editorial_source_notes",
+  "info": {
+    "displayName": "Source note",
+    "description": "One citation entry under a data-led article"
+  },
+  "attributes": {
+    "text": {
+      "type": "string",
+      "required": true
+    },
+    "url": {
+      "type": "string",
+      "required": false
+    }
+  }
+}
