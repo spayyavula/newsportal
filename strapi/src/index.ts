@@ -451,8 +451,10 @@ const PUBLIC_PERMISSIONS: Array<{ uid: string; actions: string[] }> = [
   // Phase B content types:
   { uid: 'api::chart-exhibit.chart-exhibit', actions: ['find', 'findOne'] },
   { uid: 'api::article-feedback.article-feedback', actions: ['create'] },
-  // Phase C content types (added on this branch):
+  // Phase C content types:
   { uid: 'api::podcast-recommendation.podcast-recommendation', actions: ['find', 'findOne'] },
+  // Spec 3 content types (added on this branch):
+  { uid: 'api::contributor-application.contributor-application', actions: ['create'] },
 ];
 
 async function ensurePublicPermissions(strapi: Core.Strapi) {

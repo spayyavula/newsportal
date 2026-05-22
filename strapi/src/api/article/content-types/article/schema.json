@@ -59,6 +59,15 @@
       "type": "boolean",
       "default": false
     },
+    "sourceType": {
+      "type": "enumeration",
+      "enum": ["staff", "community"],
+      "default": "staff",
+      "required": true
+    },
+    "contributorByline": {
+      "type": "string"
+    },
     "format": {
       "type": "enumeration",
       "enum": ["data-led", "light"],
