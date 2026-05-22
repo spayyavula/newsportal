@@ -3,7 +3,13 @@ import Link from "next/link";
 import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 import { ArticleCard } from "@/components/article-card";
-import { getArticlesByTopic, getTopics, getTopicBySlug } from "@/lib/cms";
+import { PodcastRecommendationCard } from "@/components/podcast-recommendation";
+import {
+  getArticlesByTopic,
+  getPodcastRecommendationsByTopic,
+  getTopics,
+  getTopicBySlug,
+} from "@/lib/cms";
 
 type TopicPageProps = {
   params: Promise<{
@@ -33,9 +39,10 @@ export async function generateMetadata({ params }: TopicPageProps): Promise<Meta
 export default async function TopicPage({ params }: TopicPageProps) {
   const { isEnabled } = await draftMode();
   const { slug } = await params;
-  const [topic, articles] = await Promise.all([
+  const [topic, articles, podcastRecs] = await Promise.all([
     getTopicBySlug(slug),
     getArticlesByTopic(slug, { preview: isEnabled }),
+    getPodcastRecommendationsByTopic(slug, 3, { preview: isEnabled }),
   ]);
 
   if (!topic) {
@@ -94,6 +101,24 @@ export default async function TopicPage({ params }: TopicPageProps) {
                 <strong>{author.name}</strong>
                 <span>{author.role}</span>
               </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {podcastRecs.length > 0 ? (
+        <section className="page-section topic-podcast-sidebar">
+          <div className="section-heading">
+            <p className="eyebrow">Recommended listening</p>
+            <h2>Curated audio for this beat</h2>
+          </div>
+          <div className="card-grid card-grid-three compact-grid">
+            {podcastRecs.map((podcast) => (
+              <PodcastRecommendationCard
+                key={`${podcast.showName}-${podcast.episodeTitle}`}
+                podcast={podcast}
+                variant="card"
+              />
             ))}
           </div>
         </section>

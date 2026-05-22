@@ -1947,3 +1947,67 @@ a:hover {
   font-style: italic;
   color: #555;
 }
+
+/* ===== Podcast recommendation ===== */
+
+.podcast-recommendation {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1rem 1.1rem;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 4px;
+}
+
+.podcast-recommendation-show {
+  margin: 0;
+  font-family: var(--font-franklin), -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #666;
+}
+
+.podcast-recommendation-episode {
+  margin: 0;
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-weight: 500;
+  font-size: 1.1rem;
+  line-height: 1.25;
+  color: #111;
+}
+
+.podcast-recommendation-host {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.podcast-recommendation-meta {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.podcast-recommendation-summary {
+  margin: 0.3rem 0 0.5rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #333;
+}
+
+.podcast-recommendation-listen {
+  align-self: flex-start;
+}
+
+.podcast-recommendation-brief {
+  margin-top: 0.5rem;
+  padding: 0.8rem 0.9rem;
+  background: #fbf9f4;
+}
+
+.topic-podcast-sidebar .section-heading {
+  margin-bottom: 1rem;
+}
