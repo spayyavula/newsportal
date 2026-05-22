@@ -14,21 +14,7 @@ export default async function Home() {
 
   return (
     <div className="page-stack">
-      {/* 1. Masthead + anchor hero (NYT-style: wordmark + date strip, then story dominant) */}
-      <header className="masthead">
-        <p className="masthead-wordmark">Common Ground</p>
-        <p className="masthead-date">
-          <time dateTime={new Date().toISOString()}>
-            {new Date().toLocaleDateString("en-US", {
-              weekday: "long",
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-            })}
-          </time>
-        </p>
-      </header>
-
+      {/* 1. Anchor hero (NYT-style: SiteHeader already provides wordmark + date + nav globally) */}
       <section className="anchor-hero">
         <div className="anchor-hero-main">
           {anchorArticle ? (
@@ -45,7 +31,7 @@ export default async function Home() {
               </h1>
               <p className="anchor-hero-summary">{anchorArticle.summary}</p>
               <p className="anchor-hero-byline">
-                By {anchorArticle.author.name.toUpperCase()}
+                By {anchorArticle.author.name}
               </p>
               <Link className="text-link anchor-hero-cta" href={`/articles/${anchorArticle.slug}`}>
                 Read the full article →
