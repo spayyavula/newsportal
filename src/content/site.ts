@@ -471,6 +471,119 @@ export const authors: Author[] = [
   },
 ];
 
+const cityBudgetExhibit: ChartExhibit = {
+  figureNumber: 1,
+  title: "Proposed transit-service hours by line, off-peak vs peak",
+  chartType: "bar",
+  series: [
+    {
+      name: "Off-peak hours",
+      data: [
+        { x: "Line 14", y: 220 },
+        { x: "Line 28", y: 195 },
+        { x: "Line 33", y: 180 },
+        { x: "Line 49", y: 165 },
+      ],
+    },
+    {
+      name: "Peak hours",
+      data: [
+        { x: "Line 14", y: 410 },
+        { x: "Line 28", y: 395 },
+        { x: "Line 33", y: 405 },
+        { x: "Line 49", y: 400 },
+      ],
+    },
+  ],
+  xAxisLabel: "Bus line",
+  yAxisLabel: "Hours per week",
+  sourceNote: "Source: Draft FY2026 city budget, transit appendix.",
+};
+
+const gridUpgradesExhibit: ChartExhibit = {
+  figureNumber: 1,
+  title: "Mean outage duration by neighborhood resilience tier, 2020–2025",
+  chartType: "line",
+  series: [
+    {
+      name: "Tier 1 (high investment)",
+      data: [
+        { x: 2020, y: 4.1 },
+        { x: 2021, y: 3.8 },
+        { x: 2022, y: 3.2 },
+        { x: 2023, y: 2.9 },
+        { x: 2024, y: 2.4 },
+        { x: 2025, y: 2.0 },
+      ],
+    },
+    {
+      name: "Tier 3 (low investment)",
+      data: [
+        { x: 2020, y: 6.2 },
+        { x: 2021, y: 6.4 },
+        { x: 2022, y: 6.1 },
+        { x: 2023, y: 6.5 },
+        { x: 2024, y: 6.8 },
+        { x: 2025, y: 6.9 },
+      ],
+    },
+  ],
+  xAxisLabel: "Year",
+  yAxisLabel: "Mean outage duration (hours)",
+  sourceNote: "Source: Utility annual reliability filings, 2020–2025.",
+};
+
+const paycheckGapExhibit: ChartExhibit = {
+  figureNumber: 1,
+  title: "Inflation-adjusted wage growth by income decile, 2022–2025",
+  chartType: "area",
+  series: [
+    {
+      name: "Top decile",
+      data: [
+        { x: 2022, y: 0 },
+        { x: 2023, y: 1.2 },
+        { x: 2024, y: 2.4 },
+        { x: 2025, y: 3.1 },
+      ],
+    },
+    {
+      name: "Bottom decile",
+      data: [
+        { x: 2022, y: 0 },
+        { x: 2023, y: -1.4 },
+        { x: 2024, y: -2.1 },
+        { x: 2025, y: -2.6 },
+      ],
+    },
+  ],
+  xAxisLabel: "Year",
+  yAxisLabel: "Real wage change (%)",
+  sourceNote: "Source: Regional wage series + CPI-U; calculations by the newsroom.",
+};
+
+const attendanceExhibit: ChartExhibit = {
+  figureNumber: 1,
+  title: "Chronic absenteeism rate by district, 2023–2025",
+  chartType: "dot",
+  series: [
+    {
+      name: "Districts",
+      data: [
+        { x: "District A", y: 24 },
+        { x: "District B", y: 19 },
+        { x: "District C", y: 31 },
+        { x: "District D", y: 22 },
+        { x: "District E", y: 27 },
+        { x: "District F", y: 18 },
+      ],
+    },
+  ],
+  xAxisLabel: "District",
+  yAxisLabel: "Chronic absentee rate (%)",
+  sourceNote: "Source: State department of education annual attendance reports.",
+};
+
 export const articles: Article[] = [
   {
     title: "What a city budget actually changes for transit, schools, and renters.",
@@ -514,6 +627,19 @@ export const articles: Article[] = [
     ],
     featured: true,
     deepDive: false,
+    format: "data-led",
+    executiveSummary: [
+      "The largest service cuts land off-peak, hitting riders with irregular shifts first.",
+      "Total service hours are 'maintained' on paper but average frequency drops on three lines.",
+      "Housing and rental assistance funding is flat; implementation begins August 1.",
+      "Administrative staffing rises 12% while frontline service hours shrink 3%.",
+    ],
+    leadExhibit: cityBudgetExhibit,
+    sourceNotes: [
+      { text: "Draft FY2026 city budget, transit appendix p.41–53.", url: "https://example.org/city-budget-2026" },
+      { text: "Interview with transit planner — recorded April 9." },
+      { text: "Prior-year delivery outcomes, transit department dashboard.", url: "https://example.org/transit-delivery-2025" },
+    ],
     publishedOn: "2026-04-11T08:00:00.000Z",
     author: authors[0],
     topic: topicCards[0],
@@ -553,6 +679,19 @@ export const articles: Article[] = [
     ],
     featured: false,
     deepDive: true,
+    format: "data-led",
+    executiveSummary: [
+      "Resilience spending only reduces outage duration where capital plans actually fund transformer replacement.",
+      "Tier 1 neighborhoods saw a 51% reduction in mean outage duration over 5 years; Tier 3 saw an 11% increase.",
+      "Heat-vulnerability funding is flat in the current capital plan despite the trend.",
+      "Restoration timelines matter more than outage frequency for heat-exposed residents.",
+    ],
+    leadExhibit: gridUpgradesExhibit,
+    sourceNotes: [
+      { text: "Utility capital plans, 2020–2025.", url: "https://example.org/utility-capital-plans" },
+      { text: "Regional heat-risk assessment, EPA.", url: "https://example.org/heat-risk" },
+      { text: "Interviews with three resilience planners, March 2025." },
+    ],
     publishedOn: "2026-04-10T14:30:00.000Z",
     author: authors[1],
     topic: topicCards[1],
@@ -588,6 +727,18 @@ export const articles: Article[] = [
     ],
     featured: false,
     deepDive: false,
+    format: "data-led",
+    executiveSummary: [
+      "Headline wage growth is up 3.1% for the top decile and down 2.6% for the bottom decile, inflation-adjusted.",
+      "Rent, care, and transport costs broke the headline average for renter households.",
+      "Regional averages mask larger declines in two of five tracked metros.",
+    ],
+    leadExhibit: paycheckGapExhibit,
+    sourceNotes: [
+      { text: "Regional wage series, Federal Reserve.", url: "https://example.org/wage-series" },
+      { text: "Consumer Expenditure Survey, BLS.", url: "https://example.org/cex" },
+      { text: "Interviews with two union representatives and one employer." },
+    ],
     publishedOn: "2026-04-09T12:00:00.000Z",
     author: authors[2],
     topic: topicCards[2],
@@ -621,6 +772,18 @@ export const articles: Article[] = [
     ],
     featured: false,
     deepDive: false,
+    format: "data-led",
+    executiveSummary: [
+      "Chronic absenteeism varies by 13 points across districts within the same state.",
+      "Health-related absences account for roughly 40% of the difference between top and bottom districts.",
+      "Two interventions with the strongest evidence base have not been adopted by the highest-absence district.",
+    ],
+    leadExhibit: attendanceExhibit,
+    sourceNotes: [
+      { text: "State department of education annual attendance reports.", url: "https://example.org/attendance" },
+      { text: "Interviews with three school social workers." },
+      { text: "Attendance intervention evaluations, RAND review." },
+    ],
     publishedOn: "2026-04-08T10:15:00.000Z",
     author: authors[0],
     topic: topicCards[3],
