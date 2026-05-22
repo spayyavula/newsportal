@@ -406,16 +406,6 @@ export async function getFeaturedArticle(options: QueryOptions = {}) {
   return allArticles.find((article) => article.featured) ?? allArticles[0] ?? null;
 }
 
-export async function getDeepDiveArticle(
-  options: QueryOptions = {},
-  excludeSlug?: string,
-): Promise<Article | null> {
-  const allArticles = await getArticles(options);
-  return (
-    allArticles.find((article) => article.deepDive && article.slug !== excludeSlug) ?? null
-  );
-}
-
 export async function getArticleBySlug(slug: string, options: QueryOptions = {}) {
   const response = await fetchStrapi<StrapiListResponse<StrapiEntity>>(
     `/api/articles?filters[slug][$eq]=${encodeURIComponent(slug)}&populate=*&status=${options.preview ? "draft" : "published"}`,
