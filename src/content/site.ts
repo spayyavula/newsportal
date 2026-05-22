@@ -31,6 +31,17 @@ export type ChartExhibit = {
 
 export type SourceNote = { text: string; url?: string };
 
+export type PodcastRecommendation = {
+  showName: string;
+  episodeTitle: string;
+  host?: string;
+  durationMinutes: number;
+  summary: string;
+  listenUrl: string;
+  topicSlug: string;
+  publishedOn: string;
+};
+
 export type BriefItem = {
   title: string;
   summary: string;
@@ -43,6 +54,7 @@ export type DailyBrief = {
   developments: BriefItem[];
   factCheck: BriefItem;
   explainer: BriefItem;
+  recommendedListen?: PodcastRecommendation;
 };
 
 export type ArticleSectionBlock = {
@@ -180,7 +192,53 @@ export const fallbackDailyBrief: DailyBrief = {
       "An evergreen guide to reading line items: where staffing cuts hide, how 'maintained' service can still degrade, and which implementation dates matter.",
     articleSlug: "city-budget-transit-schools-renters",
   },
+  recommendedListen: {
+    showName: "Council Adjourns",
+    episodeTitle: "How off-peak transit service gets quietly trimmed",
+    host: "Maya Ortiz",
+    durationMinutes: 34,
+    summary:
+      "A budget reporter walks through how 'maintained' service hours can still degrade frequency on lines with irregular ridership.",
+    listenUrl: "https://example.org/podcasts/council-adjourns/off-peak-transit",
+    topicSlug: "civic-life",
+    publishedOn: "2026-04-12T09:00:00.000Z",
+  },
 };
+
+export const fallbackPodcastRecommendations: PodcastRecommendation[] = [
+  {
+    showName: "Council Adjourns",
+    episodeTitle: "How off-peak transit service gets quietly trimmed",
+    host: "Maya Ortiz",
+    durationMinutes: 34,
+    summary:
+      "A budget reporter walks through how 'maintained' service hours can still degrade frequency on lines with irregular ridership. Pairs with the city budget reporting on Common Ground.",
+    listenUrl: "https://example.org/podcasts/council-adjourns/off-peak-transit",
+    topicSlug: "civic-life",
+    publishedOn: "2026-04-12T09:00:00.000Z",
+  },
+  {
+    showName: "Grid Practical",
+    episodeTitle: "Transformer replacement timelines, explained",
+    host: "Ravi Annapurna",
+    durationMinutes: 27,
+    summary:
+      "Three engineers describe what a real capital plan looks like inside a utility — and how to read one as an outside observer.",
+    listenUrl: "https://example.org/podcasts/grid-practical/transformers",
+    topicSlug: "climate-science",
+    publishedOn: "2026-04-09T12:00:00.000Z",
+  },
+  {
+    showName: "Slow Listening",
+    episodeTitle: "Three quiet piano works for an unhurried afternoon",
+    durationMinutes: 41,
+    summary:
+      "A short, melodic set with notes on each piece — no host commentary between tracks, just the music.",
+    listenUrl: "https://example.org/podcasts/slow-listening/three-quiet-piano-works",
+    topicSlug: "music-arts",
+    publishedOn: "2026-04-11T07:00:00.000Z",
+  },
+];
 
 export const topicCards: Topic[] = [
   {
@@ -380,6 +438,28 @@ export const topicCards: Topic[] = [
       "Executive and regulatory action",
     ],
     cadence: "Daily tracking with rapid explainers",
+  },
+  {
+    slug: "music-arts",
+    name: "Music and Arts",
+    kicker: "A quieter corner",
+    description:
+      "Music, instrumental pieces, and gentle arts writing for readers who want a soft break from the news cycle.",
+    landingIntro:
+      "A small, calmer desk — listening recommendations, melodic discoveries, and quiet pieces about hobby music and art that readers can return to between heavier stories.",
+    editorialFocus:
+      "Pieces here are appreciative and curatorial rather than investigative. They aim for soothing context and discovery, not policy or accountability framing.",
+    keyQuestions: [
+      "What is this piece, and why might a reader want to spend time with it?",
+      "What does it sound or feel like in plain language?",
+      "Where can the reader find it?",
+    ],
+    coverageFocus: [
+      "Listening recommendations",
+      "Hobby and amateur music",
+      "Quiet writing on small artworks",
+    ],
+    cadence: "One or two pieces per week",
   },
 ];
 
