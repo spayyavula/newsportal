@@ -33,6 +33,11 @@ export function ArticleContentBlocks({ blocks }: ArticleContentBlocksProps) {
           );
         }
 
+        if (block.type === "exhibit-reference") {
+          // Replaced in Phase B Task 14 with an inline <Exhibit /> render.
+          return null;
+        }
+
         return (
           <aside key={`${block.title}-${index}`} className="article-explainer">
             <p className="eyebrow">Explainer</p>

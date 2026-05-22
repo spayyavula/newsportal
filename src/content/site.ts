@@ -12,6 +12,25 @@ export type Topic = {
 
 export type StoryType = "reporting" | "analysis" | "opinion";
 
+export type ArticleFormat = "data-led" | "light";
+
+export type ChartType = "line" | "bar" | "area" | "dot" | "stackedBar";
+
+export type ChartSeriesPoint = { x: number | string; y: number };
+export type ChartSeries = { name: string; data: ChartSeriesPoint[] };
+
+export type ChartExhibit = {
+  figureNumber: number;
+  title: string;
+  chartType: ChartType;
+  series: ChartSeries[];
+  xAxisLabel?: string;
+  yAxisLabel?: string;
+  sourceNote: string;
+};
+
+export type SourceNote = { text: string; url?: string };
+
 export type BriefItem = {
   title: string;
   summary: string;
@@ -46,10 +65,16 @@ export type ArticleExplainerBlock = {
   keyPoints: string[];
 };
 
+export type ArticleExhibitReferenceBlock = {
+  type: "exhibit-reference";
+  exhibit: ChartExhibit;
+};
+
 export type ArticleBlock =
   | ArticleSectionBlock
   | ArticlePullQuoteBlock
-  | ArticleExplainerBlock;
+  | ArticleExplainerBlock
+  | ArticleExhibitReferenceBlock;
 
 export type Author = {
   name: string;
@@ -73,6 +98,10 @@ export type Article = {
   sources: string[];
   featured: boolean;
   deepDive: boolean;
+  format: ArticleFormat;
+  executiveSummary?: string[];
+  leadExhibit?: ChartExhibit;
+  sourceNotes?: SourceNote[];
   publishedOn: string;
   author: Author;
   topic: Topic;
