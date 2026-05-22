@@ -14,38 +14,60 @@ export default async function Home() {
 
   return (
     <div className="page-stack">
-      {/* 1. Hero with anchor article */}
-      <section className="hero-grid panel panel-hero">
-        <div className="space-y-6">
-          <p className="eyebrow">Advertisement-free reporting for public life</p>
-          <h1 className="hero-title">
-            A calmer news portal built for clarity, verification, and context.
-          </h1>
-          <p className="hero-copy">
-            Common Ground is designed around public-interest journalism rather
-            than attention spikes. Each piece is source-linked, clearly labeled,
-            and edited to explain what matters without sensational framing.
-          </p>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Link className="button-primary" href="/assistant">
-              Open your news assistant
-            </Link>
-            <Link className="button-primary" href="/standards">
-              Read our standards
-            </Link>
-            <Link className="button-secondary" href="/support">
-              Support the newsroom
-            </Link>
-          </div>
+      {/* 1. Masthead + anchor hero (NYT-style: wordmark + date strip, then story dominant) */}
+      <header className="masthead">
+        <p className="masthead-wordmark">Common Ground</p>
+        <p className="masthead-date">
+          <time dateTime={new Date().toISOString()}>
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </time>
+        </p>
+      </header>
+
+      <section className="anchor-hero">
+        <div className="anchor-hero-main">
+          {anchorArticle ? (
+            <>
+              <p className="anchor-hero-eyebrow">
+                <span className="anchor-hero-topic">{anchorArticle.topic.name}</span>
+                <span className="anchor-hero-divider" aria-hidden="true">·</span>
+                <span>{anchorArticle.readTime}</span>
+                <span className="anchor-hero-divider" aria-hidden="true">·</span>
+                <span className="anchor-hero-storytype">{anchorArticle.storyType}</span>
+              </p>
+              <h1 className="anchor-hero-title">
+                <Link href={`/articles/${anchorArticle.slug}`}>{anchorArticle.title}</Link>
+              </h1>
+              <p className="anchor-hero-summary">{anchorArticle.summary}</p>
+              <p className="anchor-hero-byline">
+                By {anchorArticle.author.name.toUpperCase()}
+              </p>
+              <Link className="text-link anchor-hero-cta" href={`/articles/${anchorArticle.slug}`}>
+                Read the full article →
+              </Link>
+            </>
+          ) : (
+            <>
+              <p className="anchor-hero-eyebrow">Today</p>
+              <h1 className="anchor-hero-title">CMS article feed is not configured yet.</h1>
+              <p className="anchor-hero-summary">
+                Set NEXT_PUBLIC_STRAPI_URL and STRAPI_API_TOKEN to load live articles from
+                Strapi. Until then, the portal uses its local editorial fallback.
+              </p>
+            </>
+          )}
         </div>
-        <div className="hero-card">
-          <div className="hero-card-band">Today&apos;s editorial focus</div>
-          <h2>{anchorArticle?.title ?? "CMS article feed is not configured yet."}</h2>
-          <p>
-            {anchorArticle?.summary ??
-              "Set NEXT_PUBLIC_STRAPI_URL and STRAPI_API_TOKEN to load live articles from Strapi. Until then, the portal uses its local editorial fallback."}
+
+        <aside className="anchor-hero-side">
+          <p className="anchor-hero-tagline">
+            Advertisement-free reporting for public life.
           </p>
-          <dl className="hero-stats">
+          <dl className="anchor-hero-trust">
             {trustSignals.map((signal) => (
               <div key={signal.label}>
                 <dt>{signal.label}</dt>
@@ -53,12 +75,18 @@ export default async function Home() {
               </div>
             ))}
           </dl>
-          {anchorArticle ? (
-            <Link className="text-link hero-card-link" href={`/articles/${anchorArticle.slug}`}>
-              Open featured story
+          <div className="anchor-hero-actions">
+            <Link className="button-primary" href="/assistant">
+              Open the assistant
             </Link>
-          ) : null}
-        </div>
+            <Link className="text-link" href="/standards">
+              Read our standards
+            </Link>
+            <Link className="text-link" href="/support">
+              Support the newsroom
+            </Link>
+          </div>
+        </aside>
       </section>
 
       {/* 2. Deep dive + Daily Brief */}
