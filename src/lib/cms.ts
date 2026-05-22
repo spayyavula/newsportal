@@ -31,6 +31,7 @@ import {
   articles as fallbackArticles,
   authors as fallbackAuthors,
   fallbackDailyBrief,
+  fallbackPodcastRecommendations,
   topicCards as fallbackTopics,
 } from "@/content/site";
 import type {
@@ -40,6 +41,7 @@ import type {
   BriefItem,
   ChartExhibit,
   DailyBrief,
+  PodcastRecommendation,
   SourceNote,
   Topic,
 } from "@/content/site";
@@ -274,6 +276,45 @@ function mapBriefItem(value: unknown): BriefItem | null {
   return { title, summary, articleSlug };
 }
 
+function mapPodcastRecommendation(
+  entity: StrapiEntity | null,
+): PodcastRecommendation | null {
+  if (!entity) return null;
+
+  const showName = entity.showName;
+  const episodeTitle = entity.episodeTitle;
+  const durationMinutes = entity.durationMinutes;
+  const summary = entity.summary;
+  const listenUrl = entity.listenUrl;
+  const publishedOn = entity.publishedOn;
+  const topicEntity = unwrapRelation(entity.topic);
+  const topicSlug =
+    topicEntity && typeof topicEntity.slug === "string" ? topicEntity.slug : null;
+
+  if (
+    typeof showName !== "string" ||
+    typeof episodeTitle !== "string" ||
+    typeof durationMinutes !== "number" ||
+    typeof summary !== "string" ||
+    typeof listenUrl !== "string" ||
+    typeof publishedOn !== "string" ||
+    !topicSlug
+  ) {
+    return null;
+  }
+
+  return {
+    showName,
+    episodeTitle,
+    host: typeof entity.host === "string" ? entity.host : undefined,
+    durationMinutes,
+    summary,
+    listenUrl,
+    topicSlug,
+    publishedOn,
+  };
+}
+
 function mapDailyBrief(entity: StrapiEntity): DailyBrief | null {
   const publishedOn = entity.publishedOn;
   const headline = entity.headline;
@@ -300,7 +341,10 @@ function mapDailyBrief(entity: StrapiEntity): DailyBrief | null {
     return null;
   }
 
-  return { publishedOn, headline, developments, factCheck, explainer };
+  const recommendedListen =
+    mapPodcastRecommendation(unwrapRelation(entity.recommendedListen)) ?? undefined;
+
+  return { publishedOn, headline, developments, factCheck, explainer, recommendedListen };
 }
 
 function mapTopic(entity: StrapiEntity): Topic | null {
@@ -535,7 +579,7 @@ export async function getChartExhibit(
 
 export async function getDailyBrief(options: QueryOptions = {}): Promise<DailyBrief> {
   const response = await fetchStrapi<StrapiListResponse<StrapiEntity>>(
-    `/api/daily-briefs?sort[0]=publishedOn:desc&populate[developments][populate]=articleLink&populate[factCheck][populate]=articleLink&populate[explainer][populate]=articleLink&pagination[limit]=1&status=${options.preview ? "draft" : "published"}`,
+    `/api/daily-briefs?sort[0]=publishedOn:desc&populate[developments][populate]=articleLink&populate[factCheck][populate]=articleLink&populate[explainer][populate]=articleLink&populate[recommendedListen][populate]=topic&pagination[limit]=1&status=${options.preview ? "draft" : "published"}`,
     options,
   );
 
@@ -546,6 +590,29 @@ export async function getDailyBrief(options: QueryOptions = {}): Promise<DailyBr
   }
 
   return mapDailyBrief(first) ?? freshFallbackDailyBrief();
+}
+
+export async function getPodcastRecommendationsByTopic(
+  slug: string,
+  limit = 3,
+  options: QueryOptions = {},
+): Promise<PodcastRecommendation[]> {
+  const response = await fetchStrapi<StrapiListResponse<StrapiEntity>>(
+    `/api/podcast-recommendations?filters[topic][slug][$eq]=${encodeURIComponent(slug)}&sort[0]=publishedOn:desc&populate=topic&pagination[limit]=${limit}&status=${options.preview ? "draft" : "published"}`,
+    options,
+  );
+
+  const fromStrapi = (response?.data ?? [])
+    .map(mapPodcastRecommendation)
+    .filter((item): item is PodcastRecommendation => Boolean(item));
+
+  if (fromStrapi.length > 0) {
+    return fromStrapi;
+  }
+
+  return fallbackPodcastRecommendations
+    .filter((rec) => rec.topicSlug === slug)
+    .slice(0, limit);
 }
 
 export async function getTopicBySlug(slug: string, options: QueryOptions = {}) {

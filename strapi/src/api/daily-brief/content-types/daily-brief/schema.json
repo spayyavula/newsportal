@@ -38,6 +38,11 @@
       "repeatable": false,
       "component": "editorial.brief-item",
       "required": true
+    },
+    "recommendedListen": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::podcast-recommendation.podcast-recommendation"
     }
   }
 }

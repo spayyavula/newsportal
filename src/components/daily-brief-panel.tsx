@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PodcastRecommendationCard } from "@/components/podcast-recommendation";
 import type { BriefItem, DailyBrief } from "@/content/site";
 
 function BriefEntry({ item }: { item: BriefItem }) {
@@ -55,6 +56,16 @@ export function DailyBriefPanel({ brief }: { brief: DailyBrief }) {
       <ul className="daily-brief-list">
         <BriefEntry item={brief.explainer} />
       </ul>
+
+      {brief.recommendedListen ? (
+        <>
+          <p className="daily-brief-section-label">One podcast worth this week</p>
+          <PodcastRecommendationCard
+            podcast={brief.recommendedListen}
+            variant="brief"
+          />
+        </>
+      ) : null}
     </aside>
   );
 }
