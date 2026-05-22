@@ -448,11 +448,11 @@ const PUBLIC_PERMISSIONS: Array<{ uid: string; actions: string[] }> = [
   { uid: 'api::author.author', actions: ['find', 'findOne'] },
   { uid: 'api::topic.topic', actions: ['find', 'findOne'] },
   { uid: 'api::daily-brief.daily-brief', actions: ['find', 'findOne'] },
-  // Phase B content types (added on this branch):
+  // Phase B content types:
   { uid: 'api::chart-exhibit.chart-exhibit', actions: ['find', 'findOne'] },
   { uid: 'api::article-feedback.article-feedback', actions: ['create'] },
-  // Phase C (uncomment when schemas land):
-  // { uid: 'api::podcast-recommendation.podcast-recommendation', actions: ['find', 'findOne'] },
+  // Phase C content types (added on this branch):
+  { uid: 'api::podcast-recommendation.podcast-recommendation', actions: ['find', 'findOne'] },
 ];
 
 async function ensurePublicPermissions(strapi: Core.Strapi) {

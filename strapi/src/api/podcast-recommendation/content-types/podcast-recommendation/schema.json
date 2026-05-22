@@ -1,0 +1,47 @@
+{
+  "kind": "collectionType",
+  "collectionName": "podcast_recommendations",
+  "info": {
+    "singularName": "podcast-recommendation",
+    "pluralName": "podcast-recommendations",
+    "displayName": "Podcast Recommendation",
+    "description": "Curated external podcast pick, surfaced on topic pages and optionally in the Daily Brief"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "showName": {
+      "type": "string",
+      "required": true
+    },
+    "episodeTitle": {
+      "type": "string",
+      "required": true
+    },
+    "host": {
+      "type": "string"
+    },
+    "durationMinutes": {
+      "type": "integer",
+      "required": true
+    },
+    "summary": {
+      "type": "text",
+      "required": true
+    },
+    "listenUrl": {
+      "type": "string",
+      "required": true
+    },
+    "topic": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::topic.topic"
+    },
+    "publishedOn": {
+      "type": "datetime",
+      "required": true
+    }
+  }
+}
