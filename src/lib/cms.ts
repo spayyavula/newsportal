@@ -30,9 +30,17 @@ import "server-only";
 import {
   articles as fallbackArticles,
   authors as fallbackAuthors,
+  fallbackDailyBrief,
   topicCards as fallbackTopics,
 } from "@/content/site";
-import type { Article, ArticleBlock, Author, Topic } from "@/content/site";
+import type {
+  Article,
+  ArticleBlock,
+  Author,
+  BriefItem,
+  DailyBrief,
+  Topic,
+} from "@/content/site";
 
 type StrapiListResponse<T> = {
   data: T[];
@@ -173,6 +181,58 @@ function mapArticleBlocks(value: unknown, fallbackBlocks: ArticleBlock[] = []): 
     .filter((item): item is ArticleBlock => Boolean(item));
 
   return mapped.length > 0 ? mapped : fallbackBlocks;
+}
+
+function mapBriefItem(value: unknown): BriefItem | null {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+
+  const entry = value as Record<string, unknown>;
+  const title = entry.title;
+  const summary = entry.summary;
+  const articleLinkRaw = entry.articleLink;
+
+  if (typeof title !== "string" || typeof summary !== "string") {
+    return null;
+  }
+
+  const articleEntity = unwrapRelation(articleLinkRaw);
+  const articleSlug =
+    articleEntity && typeof articleEntity.slug === "string"
+      ? articleEntity.slug
+      : undefined;
+
+  return { title, summary, articleSlug };
+}
+
+function mapDailyBrief(entity: StrapiEntity): DailyBrief | null {
+  const publishedOn = entity.publishedOn;
+  const headline = entity.headline;
+  const developmentsRaw = entity.developments;
+  const factCheckRaw = entity.factCheck;
+  const explainerRaw = entity.explainer;
+
+  if (
+    typeof publishedOn !== "string" ||
+    typeof headline !== "string" ||
+    !Array.isArray(developmentsRaw)
+  ) {
+    return null;
+  }
+
+  const developments = developmentsRaw
+    .map(mapBriefItem)
+    .filter((item): item is BriefItem => Boolean(item));
+
+  const factCheck = mapBriefItem(factCheckRaw);
+  const explainer = mapBriefItem(explainerRaw);
+
+  if (developments.length === 0 || !factCheck || !explainer) {
+    return null;
+  }
+
+  return { publishedOn, headline, developments, factCheck, explainer };
 }
 
 function mapTopic(entity: StrapiEntity): Topic | null {
@@ -364,6 +424,21 @@ export async function getTopics(options: QueryOptions = {}) {
 
   const mapped = response.data.map(mapTopic).filter((item): item is Topic => Boolean(item));
   return mapped.length > 0 ? mapped : fallbackTopics;
+}
+
+export async function getDailyBrief(options: QueryOptions = {}): Promise<DailyBrief> {
+  const response = await fetchStrapi<StrapiListResponse<StrapiEntity>>(
+    `/api/daily-briefs?sort[0]=publishedOn:desc&populate[developments][populate]=articleLink&populate[factCheck][populate]=articleLink&populate[explainer][populate]=articleLink&pagination[limit]=1&status=${options.preview ? "draft" : "published"}`,
+    options,
+  );
+
+  const first = response?.data?.[0];
+
+  if (!first) {
+    return fallbackDailyBrief;
+  }
+
+  return mapDailyBrief(first) ?? fallbackDailyBrief;
 }
 
 export async function getTopicBySlug(slug: string, options: QueryOptions = {}) {
