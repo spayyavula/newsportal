@@ -1583,3 +1583,18 @@ a:hover {
   font-style: italic;
   color: #777;
 }
+
+.editorial-trust-strip-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.editorial-trust-strip-kicker {
+  font-family: var(--font-franklin), -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #666;
+}
