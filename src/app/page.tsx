@@ -1,22 +1,20 @@
 import Link from "next/link";
 import { draftMode } from "next/headers";
-import {
-  dailyBrief,
-  editorialPrinciples,
-  supportReasons,
-  trustSignals,
-} from "@/content/site";
+import { supportReasons, trustSignals } from "@/content/site";
 import { ArticleCard } from "@/components/article-card";
+import { TrustStrip } from "@/components/trust-strip";
+import { DailyBriefPanel } from "@/components/daily-brief-panel";
+import { DeepDivePanel } from "@/components/deep-dive-panel";
 import { getHomepageData } from "@/lib/cms";
 
 export default async function Home() {
   const { isEnabled } = await draftMode();
-  const { featuredArticle, latestArticles, topics } = await getHomepageData({
-    preview: isEnabled,
-  });
+  const { anchorArticle, deepDiveArticle, dailyBrief, latestArticles, topics } =
+    await getHomepageData({ preview: isEnabled });
 
   return (
     <div className="page-stack">
+      {/* 1. Hero with anchor article */}
       <section className="hero-grid panel panel-hero">
         <div className="space-y-6">
           <p className="eyebrow">Advertisement-free reporting for public life</p>
@@ -42,9 +40,9 @@ export default async function Home() {
         </div>
         <div className="hero-card">
           <div className="hero-card-band">Today&apos;s editorial focus</div>
-          <h2>{featuredArticle?.title ?? "CMS article feed is not configured yet."}</h2>
+          <h2>{anchorArticle?.title ?? "CMS article feed is not configured yet."}</h2>
           <p>
-            {featuredArticle?.summary ??
+            {anchorArticle?.summary ??
               "Set NEXT_PUBLIC_STRAPI_URL and STRAPI_API_TOKEN to load live articles from Strapi. Until then, the portal uses its local editorial fallback."}
           </p>
           <dl className="hero-stats">
@@ -55,72 +53,39 @@ export default async function Home() {
               </div>
             ))}
           </dl>
-          {featuredArticle ? (
-            <Link className="text-link hero-card-link" href={`/articles/${featuredArticle.slug}`}>
+          {anchorArticle ? (
+            <Link className="text-link hero-card-link" href={`/articles/${anchorArticle.slug}`}>
               Open featured story
             </Link>
           ) : null}
         </div>
       </section>
 
-      <section className="page-section editorial-standards">
-        <header className="editorial-standards-heading">
-          <p className="editorial-standards-eyebrow">Editorial Standards</p>
-          <h2 className="editorial-standards-title">
-            The principles that govern how stories are reported and ranked.
-          </h2>
-        </header>
-        <div className="editorial-standards-grid">
-          {editorialPrinciples.map((principle, index) => (
-            <article className="editorial-standard" key={principle.title}>
-              <span className="editorial-standard-number">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <p className="editorial-standard-kicker">{principle.kicker}</p>
-              <h3 className="editorial-standard-title">{principle.title}</h3>
-              <p className="editorial-standard-desc">{principle.description}</p>
-            </article>
+      {/* 2. Deep dive + Daily Brief */}
+      <section className={`page-section ${deepDiveArticle ? "feature-layout" : ""}`}>
+        {deepDiveArticle ? <DeepDivePanel article={deepDiveArticle} /> : null}
+        <DailyBriefPanel brief={dailyBrief} />
+      </section>
+
+      {/* 3. Latest articles */}
+      <section className="page-section">
+        <div className="section-heading section-heading-row">
+          <div>
+            <p className="eyebrow">Latest articles</p>
+            <h2>Structured around article types, bylines, and clear sourcing.</h2>
+          </div>
+          <Link className="text-link" href="/articles">
+            Browse all articles
+          </Link>
+        </div>
+        <div className="card-grid card-grid-three">
+          {latestArticles.map((article) => (
+            <ArticleCard article={article} key={article.slug} />
           ))}
         </div>
       </section>
 
-      <section className="page-section feature-layout">
-        <article className="panel story-feature">
-          <p className="eyebrow">Featured reporting</p>
-          <div className="story-meta">
-            <span>{featuredArticle?.topic.name ?? "Newsroom model"}</span>
-            <span>{featuredArticle?.readTime ?? "CMS-ready"}</span>
-          </div>
-          <h2>{featuredArticle?.title ?? "A real article page model now sits behind the homepage."}</h2>
-          <p>
-            {featuredArticle?.summary ??
-              "The frontend now supports Strapi-backed article records with reporting, analysis, and opinion labels, author metadata, and topic relations."}
-          </p>
-          <ul className="source-list">
-            {(featuredArticle?.sources ?? []).map((source) => (
-              <li key={source}>{source}</li>
-            ))}
-          </ul>
-          {featuredArticle ? (
-            <Link className="button-secondary" href={`/articles/${featuredArticle.slug}`}>
-              Read the full article
-            </Link>
-          ) : null}
-        </article>
-        <aside className="panel brief-card">
-          <p className="eyebrow">Daily brief</p>
-          <h2>{dailyBrief.title}</h2>
-          <ul className="brief-list">
-            {dailyBrief.items.map((item) => (
-              <li key={item.title}>
-                <strong>{item.title}</strong>
-                <p>{item.summary}</p>
-              </li>
-            ))}
-          </ul>
-        </aside>
-      </section>
-
+      {/* 4. Topic beats */}
       <section className="page-section">
         <div className="section-heading section-heading-row">
           <div>
@@ -144,6 +109,10 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* 5. Trust strip */}
+      <TrustStrip />
+
+      {/* 6. Assistant callout */}
       <section className="page-section">
         <article className="panel assistant-callout">
           <div>
@@ -161,23 +130,7 @@ export default async function Home() {
         </article>
       </section>
 
-      <section className="page-section">
-        <div className="section-heading section-heading-row">
-          <div>
-            <p className="eyebrow">Latest articles</p>
-            <h2>Structured around article types, bylines, and clear sourcing.</h2>
-          </div>
-          <Link className="text-link" href="/articles">
-            Browse all articles
-          </Link>
-        </div>
-        <div className="card-grid card-grid-three">
-          {latestArticles.map((article) => (
-            <ArticleCard article={article} key={article.slug} />
-          ))}
-        </div>
-      </section>
-
+      {/* 7. Support panel */}
       <section className="page-section panel support-panel">
         <div className="section-heading">
           <p className="eyebrow">Reader support</p>
