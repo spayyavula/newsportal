@@ -88,11 +88,23 @@ async function fetchStrapi<T>(path: string, options: QueryOptions = {}): Promise
     });
 
     if (!response.ok) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn(
+          `[cms] Strapi fetch returned ${response.status} for ${path}; falling back. ` +
+            `Check that the Public role has find/findOne permissions for the targeted content type.`,
+        );
+      }
       return null;
     }
 
     return (await response.json()) as T;
-  } catch {
+  } catch (error) {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn(
+        `[cms] Strapi fetch threw for ${path}; falling back.`,
+        error instanceof Error ? error.message : error,
+      );
+    }
     return null;
   }
 }
