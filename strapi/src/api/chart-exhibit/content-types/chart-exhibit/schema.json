@@ -1,0 +1,42 @@
+{
+  "kind": "collectionType",
+  "collectionName": "chart_exhibits",
+  "info": {
+    "singularName": "chart-exhibit",
+    "pluralName": "chart-exhibits",
+    "displayName": "Chart Exhibit",
+    "description": "A reusable data exhibit (chart + caption + source note) referenced by articles"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "figureNumber": {
+      "type": "integer",
+      "required": true
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "chartType": {
+      "type": "enumeration",
+      "enum": ["line", "bar", "area", "dot", "stackedBar"],
+      "required": true
+    },
+    "series": {
+      "type": "json",
+      "required": true
+    },
+    "xAxisLabel": {
+      "type": "string"
+    },
+    "yAxisLabel": {
+      "type": "string"
+    },
+    "sourceNote": {
+      "type": "string",
+      "required": true
+    }
+  }
+}
