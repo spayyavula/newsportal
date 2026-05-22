@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArticleCard } from "@/components/article-card";
 import { ArticleContentBlocks } from "@/components/article-content-blocks";
+import { ClarityFeedback } from "@/components/clarity-feedback";
 import { ExecutiveSummary } from "@/components/executive-summary";
 import { Exhibit } from "@/components/exhibit";
 import { SourceNotes } from "@/components/source-notes";
@@ -105,6 +106,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             article.sourceNotes.length > 0 ? (
               <SourceNotes notes={article.sourceNotes} />
             ) : null}
+
+            <ClarityFeedback slug={article.slug} />
           </article>
 
           <aside className="stacked-panels">

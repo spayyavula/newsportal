@@ -1882,3 +1882,68 @@ a:hover {
   font-style: italic;
   color: #666;
 }
+
+/* ===== Clarity feedback ===== */
+
+.clarity-feedback {
+  margin: 2rem 0 0;
+  padding: 1rem 1.25rem;
+  background: #fbfbf9;
+  border: 1px solid #ebe7df;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.clarity-feedback-question {
+  margin: 0;
+  font-family: var(--font-franklin), -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.clarity-feedback-optional {
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #888;
+}
+
+.clarity-feedback-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.clarity-feedback-pill {
+  padding: 0.4rem 1rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: #222;
+}
+
+.clarity-feedback-pill:hover:not(:disabled) {
+  border-color: #888;
+}
+
+.clarity-feedback-textarea {
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  resize: vertical;
+}
+
+.clarity-feedback-thanks {
+  font-style: italic;
+  color: #555;
+}
