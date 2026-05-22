@@ -42,7 +42,8 @@
       "components": [
         "editorial.section-block",
         "editorial.pull-quote",
-        "editorial.explainer"
+        "editorial.explainer",
+        "editorial.exhibit-reference"
       ]
     },
     "sources": {
@@ -57,6 +58,27 @@
     "deepDive": {
       "type": "boolean",
       "default": false
+    },
+    "format": {
+      "type": "enumeration",
+      "enum": ["data-led", "light"],
+      "default": "data-led",
+      "required": true
+    },
+    "executiveSummary": {
+      "type": "component",
+      "repeatable": true,
+      "component": "editorial.summary-bullet"
+    },
+    "leadExhibit": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::chart-exhibit.chart-exhibit"
+    },
+    "sourceNotes": {
+      "type": "component",
+      "repeatable": true,
+      "component": "editorial.source-note"
     },
     "publishedOn": {
       "type": "datetime",

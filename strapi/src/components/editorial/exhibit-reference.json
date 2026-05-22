@@ -1,0 +1,14 @@
+{
+  "collectionName": "components_editorial_exhibit_references",
+  "info": {
+    "displayName": "Exhibit reference",
+    "description": "Place an additional chart-exhibit inline within an article body"
+  },
+  "attributes": {
+    "exhibit": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::chart-exhibit.chart-exhibit"
+    }
+  }
+}

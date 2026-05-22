@@ -1,3 +1,4 @@
+import { Exhibit } from "@/components/exhibit";
 import type { ArticleBlock } from "@/content/site";
 
 type ArticleContentBlocksProps = {
@@ -30,6 +31,15 @@ export function ArticleContentBlocks({ blocks }: ArticleContentBlocksProps) {
                 {block.role ? `, ${block.role}` : ""}
               </figcaption>
             </figure>
+          );
+        }
+
+        if (block.type === "exhibit-reference") {
+          return (
+            <Exhibit
+              key={`exhibit-${block.exhibit.figureNumber}-${index}`}
+              exhibit={block.exhibit}
+            />
           );
         }
 

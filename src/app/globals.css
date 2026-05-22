@@ -1761,3 +1761,189 @@ a:hover {
   gap: 0.5rem;
   align-items: flex-start;
 }
+
+/* ===== McKinsey article structure ===== */
+
+.executive-summary {
+  margin: 1.5rem 0 2rem;
+  padding: 1.25rem 1.5rem;
+  background: #fbf9f4;
+  border: 1px solid #e8e3d8;
+  border-radius: 4px;
+}
+
+.executive-summary-list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.executive-summary-item {
+  font-family: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  font-size: 1.02rem;
+  line-height: 1.55;
+  color: #222;
+}
+
+.exhibit {
+  margin: 2rem 0;
+}
+
+.exhibit-chart svg,
+.exhibit-compact svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+}
+
+.exhibit-caption {
+  margin-top: 0.6rem;
+  font-family: var(--font-franklin), -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: #444;
+}
+
+.exhibit-source {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.exhibit-compact {
+  margin: 0.5rem 0 0;
+}
+
+.source-notes {
+  margin: 2.5rem 0 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(17, 17, 17, 0.18);
+}
+
+.source-notes-list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.source-notes-item {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: #333;
+}
+
+.source-notes-item a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(17, 17, 17, 0.3);
+  text-underline-offset: 3px;
+}
+
+.article-card-thumbnail {
+  margin-bottom: 0.75rem;
+  padding: 0.25rem;
+  background: #fafafa;
+  border: 1px solid #efece6;
+  border-radius: 2px;
+  max-height: 100px;
+  overflow: hidden;
+}
+
+.anchor-hero-thumbnail {
+  margin: 0.5rem 0;
+  padding: 0.4rem 0.5rem;
+  background: #fafafa;
+  border: 1px solid #efece6;
+  border-radius: 2px;
+  max-width: 38rem;
+}
+
+.deep-dive-summary-preview {
+  margin: 0.5rem 0 1rem;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #222;
+}
+
+.deep-dive-summary-more {
+  list-style: none;
+  margin-left: -1.25rem;
+  font-style: italic;
+  color: #666;
+}
+
+/* ===== Clarity feedback ===== */
+
+.clarity-feedback {
+  margin: 2rem 0 0;
+  padding: 1rem 1.25rem;
+  background: #fbfbf9;
+  border: 1px solid #ebe7df;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.clarity-feedback-question {
+  margin: 0;
+  font-family: var(--font-franklin), -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.clarity-feedback-optional {
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #888;
+}
+
+.clarity-feedback-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.clarity-feedback-pill {
+  padding: 0.4rem 1rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: #222;
+}
+
+.clarity-feedback-pill:hover:not(:disabled) {
+  border-color: #888;
+}
+
+.clarity-feedback-textarea {
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  resize: vertical;
+}
+
+.clarity-feedback-thanks {
+  font-style: italic;
+  color: #555;
+}

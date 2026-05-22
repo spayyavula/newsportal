@@ -2,6 +2,7 @@ import Link from "next/link";
 import { draftMode } from "next/headers";
 import { supportReasons, trustSignals } from "@/content/site";
 import { ArticleCard } from "@/components/article-card";
+import { Exhibit } from "@/components/exhibit";
 import { TrustStrip } from "@/components/trust-strip";
 import { DailyBriefPanel } from "@/components/daily-brief-panel";
 import { DeepDivePanel } from "@/components/deep-dive-panel";
@@ -30,6 +31,11 @@ export default async function Home() {
                 <Link href={`/articles/${anchorArticle.slug}`}>{anchorArticle.title}</Link>
               </h1>
               <p className="anchor-hero-summary">{anchorArticle.summary}</p>
+              {anchorArticle.format === "data-led" && anchorArticle.leadExhibit ? (
+                <div className="anchor-hero-thumbnail">
+                  <Exhibit exhibit={anchorArticle.leadExhibit} variant="compact" />
+                </div>
+              ) : null}
               <p className="anchor-hero-byline">
                 By {anchorArticle.author.name}
               </p>

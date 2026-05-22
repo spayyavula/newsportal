@@ -4,6 +4,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArticleCard } from "@/components/article-card";
 import { ArticleContentBlocks } from "@/components/article-content-blocks";
+import { ClarityFeedback } from "@/components/clarity-feedback";
+import { ExecutiveSummary } from "@/components/executive-summary";
+import { Exhibit } from "@/components/exhibit";
+import { SourceNotes } from "@/components/source-notes";
 import {
   getArticleBySlug,
   getArticles,
@@ -84,8 +88,26 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
         <div className="article-layout">
           <article className="article-body">
+            {article.format === "data-led" &&
+            article.executiveSummary &&
+            article.executiveSummary.length > 0 ? (
+              <ExecutiveSummary bullets={article.executiveSummary} />
+            ) : null}
+
+            {article.format === "data-led" && article.leadExhibit ? (
+              <Exhibit exhibit={article.leadExhibit} />
+            ) : null}
+
             <div dangerouslySetInnerHTML={{ __html: article.body }} />
             <ArticleContentBlocks blocks={article.contentBlocks} />
+
+            {article.format === "data-led" &&
+            article.sourceNotes &&
+            article.sourceNotes.length > 0 ? (
+              <SourceNotes notes={article.sourceNotes} />
+            ) : null}
+
+            <ClarityFeedback slug={article.slug} />
           </article>
 
           <aside className="stacked-panels">

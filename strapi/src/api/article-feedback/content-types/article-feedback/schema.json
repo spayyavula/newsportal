@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "article_feedbacks",
+  "info": {
+    "singularName": "article-feedback",
+    "pluralName": "article-feedbacks",
+    "displayName": "Article Feedback",
+    "description": "Private 'Was this clear?' reader feedback"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "article": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::article.article"
+    },
+    "articleSlug": {
+      "type": "string",
+      "required": true
+    },
+    "clarity": {
+      "type": "enumeration",
+      "enum": ["yes", "no"],
+      "required": true
+    },
+    "comment": {
+      "type": "text"
+    },
+    "submittedAt": {
+      "type": "datetime",
+      "required": true
+    },
+    "userAgent": {
+      "type": "string"
+    }
+  }
+}
