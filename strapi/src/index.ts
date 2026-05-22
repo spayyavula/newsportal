@@ -35,6 +35,7 @@ type ArticleSeed = {
   contentBlocks: Array<Record<string, unknown>>;
   sources: string[];
   featured: boolean;
+  deepDive: boolean;
   publishedOn: string;
   topicSlug: string;
   authorSlug: string;
@@ -331,6 +332,7 @@ const articleSeed: ArticleSeed[] = [
       'Previous-year spending and delivery outcomes',
     ],
     featured: true,
+    deepDive: false,
     publishedOn: '2026-04-11T08:00:00.000Z',
     topicSlug: 'civic-life',
     authorSlug: 'maya-chen',
@@ -365,6 +367,7 @@ const articleSeed: ArticleSeed[] = [
     ],
     sources: ['Utility capital plans', 'Regional heat-risk assessment', 'Interviews with resilience planners'],
     featured: false,
+    deepDive: true,
     publishedOn: '2026-04-10T14:30:00.000Z',
     topicSlug: 'climate-science',
     authorSlug: 'leila-rahman',
@@ -395,6 +398,7 @@ const articleSeed: ArticleSeed[] = [
     ],
     sources: ['Regional wage series', 'Consumer expenditure survey data', 'Union and employer interviews'],
     featured: false,
+    deepDive: false,
     publishedOn: '2026-04-09T12:00:00.000Z',
     topicSlug: 'work-economy',
     authorSlug: 'tomas-ibarra',
@@ -427,6 +431,7 @@ const articleSeed: ArticleSeed[] = [
       'Attendance intervention evaluations',
     ],
     featured: false,
+    deepDive: false,
     publishedOn: '2026-04-08T10:15:00.000Z',
     topicSlug: 'education',
     authorSlug: 'maya-chen',
@@ -540,6 +545,7 @@ export default {
         contentBlocks: article.contentBlocks,
         sources: article.sources,
         featured: article.featured,
+        deepDive: article.deepDive,
         publishedOn: article.publishedOn,
         topic: topicDocumentIds.get(article.topicSlug),
         author: authorDocumentIds.get(article.authorSlug),
