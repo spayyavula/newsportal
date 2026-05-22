@@ -1854,3 +1854,12 @@ a:hover {
   max-height: 100px;
   overflow: hidden;
 }
+
+.anchor-hero-thumbnail {
+  margin: 0.5rem 0;
+  padding: 0.4rem 0.5rem;
+  background: #fafafa;
+  border: 1px solid #efece6;
+  border-radius: 2px;
+  max-width: 38rem;
+}
