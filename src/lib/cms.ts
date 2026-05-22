@@ -435,6 +435,14 @@ export async function getTopics(options: QueryOptions = {}) {
   return mapped.length > 0 ? mapped : fallbackTopics;
 }
 
+function freshFallbackDailyBrief(): DailyBrief {
+  // Use the local fallback's content shape but recompute publishedOn so the
+  // homepage 'Updated …' line always reads as today. Tradeoff: in prod, a
+  // misconfigured CMS no longer surfaces as a visibly stale date — the
+  // non-prod console.warn in fetchStrapi remains the dev-side signal.
+  return { ...fallbackDailyBrief, publishedOn: new Date().toISOString() };
+}
+
 export async function getDailyBrief(options: QueryOptions = {}): Promise<DailyBrief> {
   const response = await fetchStrapi<StrapiListResponse<StrapiEntity>>(
     `/api/daily-briefs?sort[0]=publishedOn:desc&populate[developments][populate]=articleLink&populate[factCheck][populate]=articleLink&populate[explainer][populate]=articleLink&pagination[limit]=1&status=${options.preview ? "draft" : "published"}`,
@@ -444,10 +452,10 @@ export async function getDailyBrief(options: QueryOptions = {}): Promise<DailyBr
   const first = response?.data?.[0];
 
   if (!first) {
-    return fallbackDailyBrief;
+    return freshFallbackDailyBrief();
   }
 
-  return mapDailyBrief(first) ?? fallbackDailyBrief;
+  return mapDailyBrief(first) ?? freshFallbackDailyBrief();
 }
 
 export async function getTopicBySlug(slug: string, options: QueryOptions = {}) {
