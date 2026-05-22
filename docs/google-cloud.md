@@ -227,6 +227,8 @@ Frontend environment values:
 - `OPENAI_BASE_URL`
 - `EXA_API_KEY`
 - `EXA_BASE_URL`
+- `DRAFT_WRITER_ENABLED` (set to `true` to enable the cron drafter; default off)
+- `DRAFT_WRITER_SECRET` (shared secret matching the GitHub Actions secret)
 
 CMS environment values:
 
@@ -313,6 +315,10 @@ Use Cloud Run domain mappings after both services are deployed.
 4. Test account registration if public registration is enabled.
 5. Verify draft preview with `NEXT_PREVIEW_SECRET`.
 6. After this deploy, seed the `music-arts` Topic in Strapi admin (one-time). Content Manager → Topic → Create new entry. Fill in: name "Music and Arts", slug `music-arts` (auto from name), kicker "A quieter corner", description "Music, instrumental pieces, and gentle arts writing for readers who want a soft break from the news cycle.", and the remaining fields from `src/content/site.ts`'s `music-arts` entry in `topicCards`. Save and Publish. The frontend already renders this topic from its fallback so prod won't break if skipped, but the topic admin will be empty.
+7. Seed the `ai-drafter` Strapi author (one-time, required for Spec 2). Content Manager → Author → Create new entry: name "AI research drafter", slug `ai-drafter`, role "Drafter", bio "Internal research scaffold — never published as-is. All AI-drafted articles require editorial review and rewrite before publication.", credentials "Machine-generated; review required." Save and Publish. Without this, the drafter pipeline returns `strapi_failed: ai-drafter author missing in Strapi`.
+8. Set `DRAFT_WRITER_ENABLED=true` on the frontend Cloud Run service and store `DRAFT_WRITER_SECRET` (e.g. `openssl rand -hex 32`) in Secret Manager.
+9. In GitHub repo Settings → Secrets and variables → Actions, set `DRAFT_WRITER_SECRET` (matches Cloud Run env) and `DRAFT_WRITER_URL=https://sanenews.net/api/internal/draft-writer`.
+10. Test by going to GitHub Actions → AI draft writer → Run workflow. Confirm a draft article appears in Strapi with author "AI research drafter" and `publishedAt: null`. After this validates, the 6-hour cron continues automatically.
 
 ## Notes
 
