@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "daily_briefs",
+  "info": {
+    "singularName": "daily-brief",
+    "pluralName": "daily-briefs",
+    "displayName": "Daily Brief",
+    "description": "A low-noise homepage briefing — three developments, one fact-check, one explainer"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "publishedOn": {
+      "type": "datetime",
+      "required": true
+    },
+    "headline": {
+      "type": "string",
+      "required": true
+    },
+    "developments": {
+      "type": "component",
+      "repeatable": true,
+      "component": "editorial.brief-item",
+      "required": true,
+      "min": 3,
+      "max": 3
+    },
+    "factCheck": {
+      "type": "component",
+      "repeatable": false,
+      "component": "editorial.brief-item",
+      "required": true
+    },
+    "explainer": {
+      "type": "component",
+      "repeatable": false,
+      "component": "editorial.brief-item",
+      "required": true
+    }
+  }
+}

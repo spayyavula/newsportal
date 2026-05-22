@@ -54,6 +54,11 @@
       "default": false,
       "required": true
     },
+    "deepDive": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
     "publishedOn": {
       "type": "datetime",
       "required": true

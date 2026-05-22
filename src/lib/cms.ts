@@ -30,9 +30,17 @@ import "server-only";
 import {
   articles as fallbackArticles,
   authors as fallbackAuthors,
+  fallbackDailyBrief,
   topicCards as fallbackTopics,
 } from "@/content/site";
-import type { Article, ArticleBlock, Author, Topic } from "@/content/site";
+import type {
+  Article,
+  ArticleBlock,
+  Author,
+  BriefItem,
+  DailyBrief,
+  Topic,
+} from "@/content/site";
 
 type StrapiListResponse<T> = {
   data: T[];
@@ -175,6 +183,58 @@ function mapArticleBlocks(value: unknown, fallbackBlocks: ArticleBlock[] = []): 
   return mapped.length > 0 ? mapped : fallbackBlocks;
 }
 
+function mapBriefItem(value: unknown): BriefItem | null {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+
+  const entry = value as Record<string, unknown>;
+  const title = entry.title;
+  const summary = entry.summary;
+  const articleLinkRaw = entry.articleLink;
+
+  if (typeof title !== "string" || typeof summary !== "string") {
+    return null;
+  }
+
+  const articleEntity = unwrapRelation(articleLinkRaw);
+  const articleSlug =
+    articleEntity && typeof articleEntity.slug === "string"
+      ? articleEntity.slug
+      : undefined;
+
+  return { title, summary, articleSlug };
+}
+
+function mapDailyBrief(entity: StrapiEntity): DailyBrief | null {
+  const publishedOn = entity.publishedOn;
+  const headline = entity.headline;
+  const developmentsRaw = entity.developments;
+  const factCheckRaw = entity.factCheck;
+  const explainerRaw = entity.explainer;
+
+  if (
+    typeof publishedOn !== "string" ||
+    typeof headline !== "string" ||
+    !Array.isArray(developmentsRaw)
+  ) {
+    return null;
+  }
+
+  const developments = developmentsRaw
+    .map(mapBriefItem)
+    .filter((item): item is BriefItem => Boolean(item));
+
+  const factCheck = mapBriefItem(factCheckRaw);
+  const explainer = mapBriefItem(explainerRaw);
+
+  if (developments.length === 0 || !factCheck || !explainer) {
+    return null;
+  }
+
+  return { publishedOn, headline, developments, factCheck, explainer };
+}
+
 function mapTopic(entity: StrapiEntity): Topic | null {
   const fallback = typeof entity.slug === "string" ? getFallbackTopic(entity.slug) : null;
   const slug = entity.slug;
@@ -267,6 +327,7 @@ function mapArticle(entity: StrapiEntity): Article | null {
   const contentBlocks = entity.contentBlocks;
   const sources = entity.sources;
   const featured = entity.featured;
+  const deepDive = entity.deepDive;
   const publishedOn = entity.publishedOn;
   const author = mapAuthor(unwrapRelation(entity.author) ?? {}) ?? fallback?.author ?? null;
   const topic = mapTopic(unwrapRelation(entity.topic) ?? {}) ?? fallback?.topic ?? null;
@@ -280,6 +341,7 @@ function mapArticle(entity: StrapiEntity): Article | null {
     (typeof body !== "string" && !fallback) ||
     (!Array.isArray(sources) && !fallback) ||
     (typeof featured !== "boolean" && !fallback) ||
+    (typeof deepDive !== "boolean" && !fallback) ||
     (typeof publishedOn !== "string" && !fallback) ||
     !author ||
     !topic
@@ -299,6 +361,7 @@ function mapArticle(entity: StrapiEntity): Article | null {
       ? sources.filter((item): item is string => typeof item === "string")
       : fallback!.sources,
     featured: typeof featured === "boolean" ? featured : fallback!.featured,
+    deepDive: typeof deepDive === "boolean" ? deepDive : fallback!.deepDive,
     publishedOn: typeof publishedOn === "string" ? publishedOn : fallback!.publishedOn,
     author,
     topic,
@@ -330,6 +393,11 @@ export async function getArticles(options: QueryOptions = {}) {
 export async function getFeaturedArticle(options: QueryOptions = {}) {
   const allArticles = await getArticles(options);
   return allArticles.find((article) => article.featured) ?? allArticles[0] ?? null;
+}
+
+export async function getDeepDiveArticle(options: QueryOptions = {}): Promise<Article | null> {
+  const allArticles = await getArticles(options);
+  return allArticles.find((article) => article.deepDive) ?? null;
 }
 
 export async function getLatestArticles(limit = 3, options: QueryOptions = {}) {
@@ -366,6 +434,21 @@ export async function getTopics(options: QueryOptions = {}) {
   return mapped.length > 0 ? mapped : fallbackTopics;
 }
 
+export async function getDailyBrief(options: QueryOptions = {}): Promise<DailyBrief> {
+  const response = await fetchStrapi<StrapiListResponse<StrapiEntity>>(
+    `/api/daily-briefs?sort[0]=publishedOn:desc&populate[developments][populate]=articleLink&populate[factCheck][populate]=articleLink&populate[explainer][populate]=articleLink&pagination[limit]=1&status=${options.preview ? "draft" : "published"}`,
+    options,
+  );
+
+  const first = response?.data?.[0];
+
+  if (!first) {
+    return fallbackDailyBrief;
+  }
+
+  return mapDailyBrief(first) ?? fallbackDailyBrief;
+}
+
 export async function getTopicBySlug(slug: string, options: QueryOptions = {}) {
   const response = await fetchStrapi<StrapiListResponse<StrapiEntity>>(
     `/api/topics?filters[slug][$eq]=${encodeURIComponent(slug)}`,
@@ -393,14 +476,31 @@ export async function getArticlesByTopic(slug: string, options: QueryOptions = {
 }
 
 export async function getHomepageData(options: QueryOptions = {}) {
-  const [featuredArticle, latestArticles, topics] = await Promise.all([
+  const [anchorArticle, deepDiveCandidate, topics, dailyBrief, allArticles] = await Promise.all([
     getFeaturedArticle(options),
-    getLatestArticles(4, options),
+    getDeepDiveArticle(options),
     getTopics(options),
+    getDailyBrief(options),
+    getArticles(options),
   ]);
 
+  const deepDiveArticle =
+    deepDiveCandidate && anchorArticle && deepDiveCandidate.slug !== anchorArticle.slug
+      ? deepDiveCandidate
+      : null;
+
+  const excludedSlugs = new Set<string>();
+  if (anchorArticle) excludedSlugs.add(anchorArticle.slug);
+  if (deepDiveArticle) excludedSlugs.add(deepDiveArticle.slug);
+
+  const latestArticles = allArticles
+    .filter((article) => !excludedSlugs.has(article.slug))
+    .slice(0, 3);
+
   return {
-    featuredArticle,
+    anchorArticle,
+    deepDiveArticle,
+    dailyBrief,
     latestArticles,
     topics,
   };

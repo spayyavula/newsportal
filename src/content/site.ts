@@ -12,6 +12,20 @@ export type Topic = {
 
 export type StoryType = "reporting" | "analysis" | "opinion";
 
+export type BriefItem = {
+  title: string;
+  summary: string;
+  articleSlug?: string;
+};
+
+export type DailyBrief = {
+  publishedOn: string;
+  headline: string;
+  developments: BriefItem[];
+  factCheck: BriefItem;
+  explainer: BriefItem;
+};
+
 export type ArticleSectionBlock = {
   type: "section";
   heading: string;
@@ -58,6 +72,7 @@ export type Article = {
   contentBlocks: ArticleBlock[];
   sources: string[];
   featured: boolean;
+  deepDive: boolean;
   publishedOn: string;
   author: Author;
   topic: Topic;
@@ -101,25 +116,41 @@ export const editorialPrinciples = [
   },
 ];
 
-export const dailyBrief = {
-  title: "A low-noise briefing for people who want orientation, not overload.",
-  items: [
+export const fallbackDailyBrief: DailyBrief = {
+  publishedOn: "2026-04-11T08:00:00.000Z",
+  headline: "Where public decisions are landing this week.",
+  developments: [
     {
-      title: "Three developments worth tracking",
+      title: "City budget reshapes off-peak transit",
       summary:
-        "A short list of changes that carry real public consequence, each with a sentence of why it matters.",
+        "Council approved the budget last night. The largest service adjustments land outside commuter rush hours, which hits riders with irregular shifts first.",
+      articleSlug: "city-budget-transit-schools-renters",
     },
     {
-      title: "One claim checked against evidence",
+      title: "Utility files new resilience capital plan",
       summary:
-        "A recurring slot for testing a public statement against primary documents or data.",
+        "The plan locks in transformer replacement and outage-duration targets through 2028. Heat-vulnerability funding remains flat.",
+      articleSlug: "grid-upgrades-and-heat-risk",
     },
     {
-      title: "One explainer to save for later",
+      title: "Regional wage data shows rent-cost divergence",
       summary:
-        "Evergreen context pieces that remain useful after the immediate news cycle moves on.",
+        "Headline wage growth held steady, but renter households in the bottom decile lost ground against essential costs.",
+      articleSlug: "paycheck-inflation-gap-households",
     },
   ],
+  factCheck: {
+    title: "Mayor's claim that 'no service is being cut' — partially supported",
+    summary:
+      "The budget preserves total service hours but cuts off-peak frequency by roughly 18 percent on three lines, according to the transit planner's own delivery report.",
+    articleSlug: "city-budget-transit-schools-renters",
+  },
+  explainer: {
+    title: "What to actually check in a city budget story",
+    summary:
+      "An evergreen guide to reading line items: where staffing cuts hide, how 'maintained' service can still degrade, and which implementation dates matter.",
+    articleSlug: "city-budget-transit-schools-renters",
+  },
 };
 
 export const topicCards: Topic[] = [
@@ -453,6 +484,7 @@ export const articles: Article[] = [
       "Previous-year spending and delivery outcomes",
     ],
     featured: true,
+    deepDive: false,
     publishedOn: "2026-04-11T08:00:00.000Z",
     author: authors[0],
     topic: topicCards[0],
@@ -491,6 +523,7 @@ export const articles: Article[] = [
       "Interviews with resilience planners",
     ],
     featured: false,
+    deepDive: true,
     publishedOn: "2026-04-10T14:30:00.000Z",
     author: authors[1],
     topic: topicCards[1],
@@ -525,6 +558,7 @@ export const articles: Article[] = [
       "Union and employer interviews",
     ],
     featured: false,
+    deepDive: false,
     publishedOn: "2026-04-09T12:00:00.000Z",
     author: authors[2],
     topic: topicCards[2],
@@ -557,6 +591,7 @@ export const articles: Article[] = [
       "Attendance intervention evaluations",
     ],
     featured: false,
+    deepDive: false,
     publishedOn: "2026-04-08T10:15:00.000Z",
     author: authors[0],
     topic: topicCards[3],
