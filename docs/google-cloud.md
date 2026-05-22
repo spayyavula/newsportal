@@ -312,6 +312,7 @@ Use Cloud Run domain mappings after both services are deployed.
 3. Test `/assistant`, `/topics`, `/articles`, and `/api/assistant`.
 4. Test account registration if public registration is enabled.
 5. Verify draft preview with `NEXT_PREVIEW_SECRET`.
+6. After this deploy, seed the `music-arts` Topic in Strapi admin (one-time). Content Manager → Topic → Create new entry. Fill in: name "Music and Arts", slug `music-arts` (auto from name), kicker "A quieter corner", description "Music, instrumental pieces, and gentle arts writing for readers who want a soft break from the news cycle.", and the remaining fields from `src/content/site.ts`'s `music-arts` entry in `topicCards`. Save and Publish. The frontend already renders this topic from its fallback so prod won't break if skipped, but the topic admin will be empty.
 
 ## Notes
 
