@@ -39,11 +39,16 @@ export async function generateMetadata({ params }: TopicPageProps): Promise<Meta
 export default async function TopicPage({ params }: TopicPageProps) {
   const { isEnabled } = await draftMode();
   const { slug } = await params;
-  const [topic, articles, podcastRecs] = await Promise.all([
+  const [topic, articles, podcastRecs, communityPiecesAll] = await Promise.all([
     getTopicBySlug(slug),
     getArticlesByTopic(slug, { preview: isEnabled }),
     getPodcastRecommendationsByTopic(slug, 3, { preview: isEnabled }),
+    getArticlesByTopic(slug, { includeCommunity: true, preview: isEnabled }),
   ]);
+
+  const communityPieces = communityPiecesAll
+    .filter((article) => article.sourceType === "community")
+    .slice(0, 3);
 
   if (!topic) {
     notFound();
@@ -119,6 +124,26 @@ export default async function TopicPage({ params }: TopicPageProps) {
                 podcast={podcast}
                 variant="card"
               />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {communityPieces.length > 0 ? (
+        <section className="page-section">
+          <div className="section-heading">
+            <p className="eyebrow">From the community</p>
+            <h2>Reader essays on this beat</h2>
+          </div>
+          <div className="card-grid card-grid-two">
+            {communityPieces.map((article) => (
+              <article className="voices-card" key={article.slug}>
+                <p className="card-kicker">Reader contribution</p>
+                <h3>
+                  <Link href={`/voices/${article.slug}`}>{article.title}</Link>
+                </h3>
+                <p className="voices-card-summary">{article.summary}</p>
+              </article>
             ))}
           </div>
         </section>

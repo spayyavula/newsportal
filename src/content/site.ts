@@ -124,6 +124,7 @@ export type Article = {
 export const navigation = [
   { href: "/assistant", label: "Assistant" },
   { href: "/articles", label: "Articles" },
+  { href: "/voices", label: "Voices" },
   { href: "/authors", label: "Authors" },
   { href: "/topics", label: "Topics" },
   { href: "/about", label: "About" },

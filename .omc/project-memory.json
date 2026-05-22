@@ -1,0 +1,498 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1779400302542,
+  "projectRoot": "c:\\Users\\sreek\\myprojects\\sanenews",
+  "techStack": {
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      },
+      {
+        "name": "TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "tsconfig.json"
+        ]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "next",
+        "version": "16.2.3",
+        "category": "fullstack"
+      },
+      {
+        "name": "react",
+        "version": "19.2.4",
+        "category": "frontend"
+      },
+      {
+        "name": "react-dom",
+        "version": "19.2.4",
+        "category": "frontend"
+      }
+    ],
+    "packageManager": "npm",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": "npm run build 2>&1 | tail -5",
+    "testCommand": null,
+    "lintCommand": "npm run lint",
+    "devCommand": "npm run dev",
+    "scripts": {
+      "dev": "next dev",
+      "build": "next build",
+      "start": "next start",
+      "lint": "eslint",
+      "cms:dev": "npm --prefix strapi run develop",
+      "cms:build": "npm --prefix strapi run build"
+    }
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": "type-based"
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "docs",
+      "public",
+      "scripts",
+      "src"
+    ],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "deploy": {
+      "path": "deploy",
+      "purpose": null,
+      "fileCount": 2,
+      "lastAccessed": 1779400302503,
+      "keyFiles": [
+        "cloud-build.cms.yaml",
+        "cloud-build.frontend.yaml"
+      ]
+    },
+    "docs": {
+      "path": "docs",
+      "purpose": "Documentation",
+      "fileCount": 1,
+      "lastAccessed": 1779400302503,
+      "keyFiles": [
+        "google-cloud.md"
+      ]
+    },
+    "public": {
+      "path": "public",
+      "purpose": "Public files",
+      "fileCount": 9,
+      "lastAccessed": 1779400302517,
+      "keyFiles": [
+        "file.svg",
+        "globe.svg",
+        "icon-192.png",
+        "icon-512.png",
+        "manifest.json"
+      ]
+    },
+    "scripts": {
+      "path": "scripts",
+      "purpose": "Build/utility scripts",
+      "fileCount": 1,
+      "lastAccessed": 1779400302517,
+      "keyFiles": [
+        "setup-sanenews-gcp.ps1"
+      ]
+    },
+    "src": {
+      "path": "src",
+      "purpose": "Source code",
+      "fileCount": 0,
+      "lastAccessed": 1779400302517,
+      "keyFiles": []
+    },
+    "strapi": {
+      "path": "strapi",
+      "purpose": null,
+      "fileCount": 8,
+      "lastAccessed": 1779400302518,
+      "keyFiles": [
+        "Dockerfile",
+        "favicon.png",
+        "package-lock.json",
+        "package.json",
+        "README.md"
+      ]
+    },
+    "src\\app": {
+      "path": "src\\app",
+      "purpose": "Application code",
+      "fileCount": 4,
+      "lastAccessed": 1779400302519,
+      "keyFiles": [
+        "favicon.ico",
+        "globals.css",
+        "layout.tsx"
+      ]
+    },
+    "src\\components": {
+      "path": "src\\components",
+      "purpose": "UI components",
+      "fileCount": 8,
+      "lastAccessed": 1779400302520,
+      "keyFiles": [
+        "article-card.tsx",
+        "article-content-blocks.tsx",
+        "author-card.tsx"
+      ]
+    },
+    "src\\lib": {
+      "path": "src\\lib",
+      "purpose": "Library code",
+      "fileCount": 6,
+      "lastAccessed": 1779400302520,
+      "keyFiles": [
+        "assistant-llm.ts",
+        "cms.ts",
+        "exa-news.ts"
+      ]
+    },
+    "strapi\\config": {
+      "path": "strapi\\config",
+      "purpose": "Configuration files",
+      "fileCount": 6,
+      "lastAccessed": 1779400302521,
+      "keyFiles": [
+        "admin.ts",
+        "api.ts",
+        "database.ts"
+      ]
+    },
+    "strapi\\public": {
+      "path": "strapi\\public",
+      "purpose": "Public files",
+      "fileCount": 1,
+      "lastAccessed": 1779400302522,
+      "keyFiles": [
+        "robots.txt"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "src\\lib\\cms.ts",
+      "accessCount": 46,
+      "lastAccessed": 1779424622219,
+      "type": "file"
+    },
+    {
+      "path": "src\\content\\site.ts",
+      "accessCount": 28,
+      "lastAccessed": 1779424591043,
+      "type": "file"
+    },
+    {
+      "path": "strapi\\src\\index.ts",
+      "accessCount": 13,
+      "lastAccessed": 1779424285172,
+      "type": "file"
+    },
+    {
+      "path": "docs\\superpowers\\specs\\2026-05-22-homepage-mckinsey-soft-sections-design.md",
+      "accessCount": 12,
+      "lastAccessed": 1779404680380,
+      "type": "file"
+    },
+    {
+      "path": "docs\\superpowers\\plans\\2026-05-22-homepage-phase-a-plan.md",
+      "accessCount": 8,
+      "lastAccessed": 1779407666574,
+      "type": "file"
+    },
+    {
+      "path": "src\\app\\page.tsx",
+      "accessCount": 8,
+      "lastAccessed": 1779419557367,
+      "type": "file"
+    },
+    {
+      "path": "strapi\\src\\api\\article\\content-types\\article\\schema.json",
+      "accessCount": 7,
+      "lastAccessed": 1779424264600,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\daily-brief-panel.tsx",
+      "accessCount": 6,
+      "lastAccessed": 1779420991493,
+      "type": "file"
+    },
+    {
+      "path": "docs\\google-cloud.md",
+      "accessCount": 6,
+      "lastAccessed": 1779421834776,
+      "type": "file"
+    },
+    {
+      "path": "src\\app\\articles\\[slug]\\page.tsx",
+      "accessCount": 5,
+      "lastAccessed": 1779420030790,
+      "type": "file"
+    },
+    {
+      "path": "src\\app\\globals.css",
+      "accessCount": 4,
+      "lastAccessed": 1779416975198,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\article-content-blocks.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1779419353396,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\deep-dive-panel.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1779419590696,
+      "type": "file"
+    },
+    {
+      "path": "docs\\superpowers\\plans\\2026-05-22-homepage-phase-b-plan.md",
+      "accessCount": 3,
+      "lastAccessed": 1779417528189,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\article-card.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1779419510131,
+      "type": "file"
+    },
+    {
+      "path": "strapi\\src\\components\\editorial\\brief-item.json",
+      "accessCount": 2,
+      "lastAccessed": 1779410065873,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\trust-strip.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1779415985940,
+      "type": "file"
+    },
+    {
+      "path": "src",
+      "accessCount": 2,
+      "lastAccessed": 1779417089833,
+      "type": "directory"
+    },
+    {
+      "path": "strapi\\src\\api\\daily-brief\\content-types\\daily-brief\\schema.json",
+      "accessCount": 2,
+      "lastAccessed": 1779420773567,
+      "type": "file"
+    },
+    {
+      "path": "src\\app\\assistant\\page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779400467656,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\news-assistant.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779400468209,
+      "type": "file"
+    },
+    {
+      "path": ".superpowers\\brainstorm\\865-1779400859\\state\\server-info",
+      "accessCount": 1,
+      "lastAccessed": 1779400867568,
+      "type": "file"
+    },
+    {
+      "path": ".superpowers\\brainstorm\\865-1779400859\\content\\welcome.html",
+      "accessCount": 1,
+      "lastAccessed": 1779400888634,
+      "type": "file"
+    },
+    {
+      "path": ".superpowers\\brainstorm\\865-1779400859\\content\\manifesto-treatment.html",
+      "accessCount": 1,
+      "lastAccessed": 1779401238948,
+      "type": "file"
+    },
+    {
+      "path": ".superpowers\\brainstorm\\865-1779400859\\content\\featured-dedupe.html",
+      "accessCount": 1,
+      "lastAccessed": 1779401375895,
+      "type": "file"
+    },
+    {
+      "path": ".superpowers\\brainstorm\\865-1779400859\\content\\section-order.html",
+      "accessCount": 1,
+      "lastAccessed": 1779401532679,
+      "type": "file"
+    },
+    {
+      "path": ".superpowers\\brainstorm\\865-1779400859\\content\\waiting-1.html",
+      "accessCount": 1,
+      "lastAccessed": 1779401621767,
+      "type": "file"
+    },
+    {
+      "path": ".superpowers\\brainstorm\\865-1779400859\\content\\chart-authoring.html",
+      "accessCount": 1,
+      "lastAccessed": 1779401969256,
+      "type": "file"
+    },
+    {
+      "path": ".superpowers\\brainstorm\\865-1779400859\\content\\chart-library.html",
+      "accessCount": 1,
+      "lastAccessed": 1779402099503,
+      "type": "file"
+    },
+    {
+      "path": ".superpowers\\brainstorm\\865-1779400859\\content\\waiting-2.html",
+      "accessCount": 1,
+      "lastAccessed": 1779402247942,
+      "type": "file"
+    },
+    {
+      "path": "src\\lib\\assistant-llm.ts",
+      "accessCount": 1,
+      "lastAccessed": 1779403982925,
+      "type": "file"
+    },
+    {
+      "path": "src\\lib\\exa-news.ts",
+      "accessCount": 1,
+      "lastAccessed": 1779403983581,
+      "type": "file"
+    },
+    {
+      "path": "docs\\superpowers\\specs\\2026-05-22-ai-drafter-internal-leads-design.md",
+      "accessCount": 1,
+      "lastAccessed": 1779405127670,
+      "type": "file"
+    },
+    {
+      "path": "docs\\superpowers\\specs\\2026-05-22-community-contributions-design.md",
+      "accessCount": 1,
+      "lastAccessed": 1779405604866,
+      "type": "file"
+    },
+    {
+      "path": "strapi\\src\\components\\editorial\\section-block.json",
+      "accessCount": 1,
+      "lastAccessed": 1779407331263,
+      "type": "file"
+    },
+    {
+      "path": "strapi\\src\\api\\topic\\content-types\\topic\\schema.json",
+      "accessCount": 1,
+      "lastAccessed": 1779407331650,
+      "type": "file"
+    },
+    {
+      "path": "strapi\\src\\api\\topic\\controllers\\topic.ts",
+      "accessCount": 1,
+      "lastAccessed": 1779407337766,
+      "type": "file"
+    },
+    {
+      "path": "strapi\\src\\api\\topic\\routes\\topic.ts",
+      "accessCount": 1,
+      "lastAccessed": 1779407338302,
+      "type": "file"
+    },
+    {
+      "path": "docs\\superpowers\\plans\\2026-05-22-homepage-phase-c-plan.md",
+      "accessCount": 1,
+      "lastAccessed": 1779408256760,
+      "type": "file"
+    },
+    {
+      "path": "docs\\superpowers\\plans\\2026-05-22-ai-drafter-plan.md",
+      "accessCount": 1,
+      "lastAccessed": 1779408375754,
+      "type": "file"
+    },
+    {
+      "path": "docs\\superpowers\\plans\\2026-05-22-community-contributions-plan.md",
+      "accessCount": 1,
+      "lastAccessed": 1779408692655,
+      "type": "file"
+    },
+    {
+      "path": "strapi\\src\\components\\editorial\\explainer.json",
+      "accessCount": 1,
+      "lastAccessed": 1779409934033,
+      "type": "file"
+    },
+    {
+      "path": "strapi\\src\\api\\daily-brief\\controllers\\daily-brief.ts",
+      "accessCount": 1,
+      "lastAccessed": 1779410328475,
+      "type": "file"
+    },
+    {
+      "path": "strapi\\src\\api\\daily-brief\\routes\\daily-brief.ts",
+      "accessCount": 1,
+      "lastAccessed": 1779410329804,
+      "type": "file"
+    },
+    {
+      "path": "strapi\\src\\api\\daily-brief\\services\\daily-brief.ts",
+      "accessCount": 1,
+      "lastAccessed": 1779410331088,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\site-header.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779416922855,
+      "type": "file"
+    },
+    {
+      "path": "strapi\\src\\components\\editorial\\summary-bullet.json",
+      "accessCount": 1,
+      "lastAccessed": 1779418683639,
+      "type": "file"
+    },
+    {
+      "path": "strapi\\src\\components\\editorial\\source-note.json",
+      "accessCount": 1,
+      "lastAccessed": 1779418685096,
+      "type": "file"
+    },
+    {
+      "path": "strapi\\src\\api\\chart-exhibit\\content-types\\chart-exhibit\\schema.json",
+      "accessCount": 1,
+      "lastAccessed": 1779418703601,
+      "type": "file"
+    },
+    {
+      "path": "strapi\\src\\api\\chart-exhibit\\controllers\\chart-exhibit.ts",
+      "accessCount": 1,
+      "lastAccessed": 1779418704837,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

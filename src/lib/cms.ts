@@ -660,13 +660,17 @@ export async function getArticlesByTopic(slug: string, options: QueryOptions = {
   );
 
   if (!response?.data?.length) {
-    return sortArticles(fallbackArticles.filter((article) => article.topic.slug === slug));
+    return filterByCommunityVisibility(
+      sortArticles(fallbackArticles.filter((article) => article.topic.slug === slug)),
+      options,
+    );
   }
 
   const mapped = response.data.map(mapArticle).filter((item): item is Article => Boolean(item));
-  return mapped.length > 0
+  const sorted = mapped.length > 0
     ? sortArticles(mapped)
     : sortArticles(fallbackArticles.filter((article) => article.topic.slug === slug));
+  return filterByCommunityVisibility(sorted, options);
 }
 
 export async function getHomepageData(options: QueryOptions = {}) {
