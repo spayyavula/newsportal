@@ -1761,3 +1761,86 @@ a:hover {
   gap: 0.5rem;
   align-items: flex-start;
 }
+
+/* ===== McKinsey article structure ===== */
+
+.executive-summary {
+  margin: 1.5rem 0 2rem;
+  padding: 1.25rem 1.5rem;
+  background: #fbf9f4;
+  border: 1px solid #e8e3d8;
+  border-radius: 4px;
+}
+
+.executive-summary-list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.executive-summary-item {
+  font-family: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  font-size: 1.02rem;
+  line-height: 1.55;
+  color: #222;
+}
+
+.exhibit {
+  margin: 2rem 0;
+}
+
+.exhibit-chart svg,
+.exhibit-compact svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+}
+
+.exhibit-caption {
+  margin-top: 0.6rem;
+  font-family: var(--font-franklin), -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: #444;
+}
+
+.exhibit-source {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.exhibit-compact {
+  margin: 0.5rem 0 0;
+}
+
+.source-notes {
+  margin: 2.5rem 0 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(17, 17, 17, 0.18);
+}
+
+.source-notes-list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.source-notes-item {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: #333;
+}
+
+.source-notes-item a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(17, 17, 17, 0.3);
+  text-underline-offset: 3px;
+}
