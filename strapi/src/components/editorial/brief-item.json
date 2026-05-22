@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_editorial_brief_items",
+  "info": {
+    "displayName": "Brief item",
+    "description": "One slot in a daily brief (development, fact-check, or explainer)"
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "summary": {
+      "type": "text",
+      "required": true
+    },
+    "articleLink": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::article.article"
+    }
+  }
+}
