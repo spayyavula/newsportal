@@ -41,8 +41,8 @@ export function DailyBriefPanel({ brief }: { brief: DailyBrief }) {
 
       <p className="daily-brief-section-label">Three developments worth tracking</p>
       <ul className="daily-brief-list">
-        {brief.developments.map((item) => (
-          <BriefEntry key={item.title} item={item} />
+        {brief.developments.map((item, index) => (
+          <BriefEntry key={`development-${index}-${item.title}`} item={item} />
         ))}
       </ul>
 
