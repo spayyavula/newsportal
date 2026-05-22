@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Exhibit } from "@/components/exhibit";
 import type { Article } from "@/content/site";
 
 type ArticleCardProps = {
@@ -6,8 +7,15 @@ type ArticleCardProps = {
 };
 
 export function ArticleCard({ article }: ArticleCardProps) {
+  const showThumbnail = article.format === "data-led" && Boolean(article.leadExhibit);
+
   return (
     <article className="article-card">
+      {showThumbnail && article.leadExhibit ? (
+        <div className="article-card-thumbnail">
+          <Exhibit exhibit={article.leadExhibit} variant="compact" />
+        </div>
+      ) : null}
       <div className="article-card-topline">
         <span className="label-pill">{article.storyType}</span>
         <span>{article.topic.name}</span>
