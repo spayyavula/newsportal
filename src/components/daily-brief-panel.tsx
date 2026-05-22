@@ -19,15 +19,30 @@ function BriefEntry({ item }: { item: BriefItem }) {
 }
 
 export function DailyBriefPanel({ brief }: { brief: DailyBrief }) {
+  const publishedDate = new Date(brief.publishedOn);
+  const publishedLabel = Number.isNaN(publishedDate.getTime())
+    ? null
+    : publishedDate.toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      });
+
   return (
     <aside className="panel brief-card daily-brief-panel">
       <p className="eyebrow">Daily brief</p>
       <h2>{brief.headline}</h2>
+      {publishedLabel ? (
+        <p className="daily-brief-updated">
+          <time dateTime={brief.publishedOn}>Updated {publishedLabel}</time>
+        </p>
+      ) : null}
 
       <p className="daily-brief-section-label">Three developments worth tracking</p>
       <ul className="daily-brief-list">
-        {brief.developments.map((item) => (
-          <BriefEntry key={item.title} item={item} />
+        {brief.developments.map((item, index) => (
+          <BriefEntry key={`development-${index}-${item.title}`} item={item} />
         ))}
       </ul>
 

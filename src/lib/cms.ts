@@ -88,11 +88,23 @@ async function fetchStrapi<T>(path: string, options: QueryOptions = {}): Promise
     });
 
     if (!response.ok) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn(
+          `[cms] Strapi fetch returned ${response.status} for ${path}; falling back. ` +
+            `Check that the Public role has find/findOne permissions for the targeted content type.`,
+        );
+      }
       return null;
     }
 
     return (await response.json()) as T;
-  } catch {
+  } catch (error) {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn(
+        `[cms] Strapi fetch threw for ${path}; falling back.`,
+        error instanceof Error ? error.message : error,
+      );
+    }
     return null;
   }
 }
@@ -341,7 +353,6 @@ function mapArticle(entity: StrapiEntity): Article | null {
     (typeof body !== "string" && !fallback) ||
     (!Array.isArray(sources) && !fallback) ||
     (typeof featured !== "boolean" && !fallback) ||
-    (typeof deepDive !== "boolean" && !fallback) ||
     (typeof publishedOn !== "string" && !fallback) ||
     !author ||
     !topic
@@ -361,7 +372,7 @@ function mapArticle(entity: StrapiEntity): Article | null {
       ? sources.filter((item): item is string => typeof item === "string")
       : fallback!.sources,
     featured: typeof featured === "boolean" ? featured : fallback!.featured,
-    deepDive: typeof deepDive === "boolean" ? deepDive : fallback!.deepDive,
+    deepDive: typeof deepDive === "boolean" ? deepDive : (fallback?.deepDive ?? false),
     publishedOn: typeof publishedOn === "string" ? publishedOn : fallback!.publishedOn,
     author,
     topic,
@@ -395,16 +406,6 @@ export async function getFeaturedArticle(options: QueryOptions = {}) {
   return allArticles.find((article) => article.featured) ?? allArticles[0] ?? null;
 }
 
-export async function getDeepDiveArticle(options: QueryOptions = {}): Promise<Article | null> {
-  const allArticles = await getArticles(options);
-  return allArticles.find((article) => article.deepDive) ?? null;
-}
-
-export async function getLatestArticles(limit = 3, options: QueryOptions = {}) {
-  const allArticles = await getArticles(options);
-  return allArticles.slice(0, limit);
-}
-
 export async function getArticleBySlug(slug: string, options: QueryOptions = {}) {
   const response = await fetchStrapi<StrapiListResponse<StrapiEntity>>(
     `/api/articles?filters[slug][$eq]=${encodeURIComponent(slug)}&populate=*&status=${options.preview ? "draft" : "published"}`,
@@ -434,6 +435,14 @@ export async function getTopics(options: QueryOptions = {}) {
   return mapped.length > 0 ? mapped : fallbackTopics;
 }
 
+function freshFallbackDailyBrief(): DailyBrief {
+  // Use the local fallback's content shape but recompute publishedOn so the
+  // homepage 'Updated …' line always reads as today. Tradeoff: in prod, a
+  // misconfigured CMS no longer surfaces as a visibly stale date — the
+  // non-prod console.warn in fetchStrapi remains the dev-side signal.
+  return { ...fallbackDailyBrief, publishedOn: new Date().toISOString() };
+}
+
 export async function getDailyBrief(options: QueryOptions = {}): Promise<DailyBrief> {
   const response = await fetchStrapi<StrapiListResponse<StrapiEntity>>(
     `/api/daily-briefs?sort[0]=publishedOn:desc&populate[developments][populate]=articleLink&populate[factCheck][populate]=articleLink&populate[explainer][populate]=articleLink&pagination[limit]=1&status=${options.preview ? "draft" : "published"}`,
@@ -443,10 +452,10 @@ export async function getDailyBrief(options: QueryOptions = {}): Promise<DailyBr
   const first = response?.data?.[0];
 
   if (!first) {
-    return fallbackDailyBrief;
+    return freshFallbackDailyBrief();
   }
 
-  return mapDailyBrief(first) ?? fallbackDailyBrief;
+  return mapDailyBrief(first) ?? freshFallbackDailyBrief();
 }
 
 export async function getTopicBySlug(slug: string, options: QueryOptions = {}) {
@@ -476,18 +485,19 @@ export async function getArticlesByTopic(slug: string, options: QueryOptions = {
 }
 
 export async function getHomepageData(options: QueryOptions = {}) {
-  const [anchorArticle, deepDiveCandidate, topics, dailyBrief, allArticles] = await Promise.all([
-    getFeaturedArticle(options),
-    getDeepDiveArticle(options),
+  const [allArticles, topics, dailyBrief] = await Promise.all([
+    getArticles(options),
     getTopics(options),
     getDailyBrief(options),
-    getArticles(options),
   ]);
 
+  const anchorArticle =
+    allArticles.find((article) => article.featured) ?? allArticles[0] ?? null;
+
   const deepDiveArticle =
-    deepDiveCandidate && anchorArticle && deepDiveCandidate.slug !== anchorArticle.slug
-      ? deepDiveCandidate
-      : null;
+    allArticles.find(
+      (article) => article.deepDive && article.slug !== anchorArticle?.slug,
+    ) ?? null;
 
   const excludedSlugs = new Set<string>();
   if (anchorArticle) excludedSlugs.add(anchorArticle.slug);

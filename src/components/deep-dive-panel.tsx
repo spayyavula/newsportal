@@ -12,8 +12,8 @@ export function DeepDivePanel({ article }: { article: Article }) {
       <h2>{article.title}</h2>
       <p>{article.summary}</p>
       <ul className="source-list">
-        {article.sources.map((source) => (
-          <li key={source}>{source}</li>
+        {article.sources.map((source, index) => (
+          <li key={`source-${index}-${source}`}>{source}</li>
         ))}
       </ul>
       <Link className="button-secondary" href={`/articles/${article.slug}`}>

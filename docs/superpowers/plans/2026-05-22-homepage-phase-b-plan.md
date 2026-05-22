@@ -12,6 +12,11 @@
 
 **Depends on:** Spec 1 Phase A plan having shipped. The article schema, CMS lib, and homepage component all extend Phase A's work.
 
+**Editorial decisions to make before Task 4 (article schema additions):** Per the PR #1 review of Phase A, two coexistence questions need explicit answers before this plan ships. Decide both before editors start populating the new fields, or you'll end up with inconsistent content.
+
+1. **`sources: string[]` (Phase A) vs new `sourceNotes` component (Phase B).** Decide: is `sources` deprecated (and removed via migration once `sourceNotes` is populated for the existing corpus), or does it stay as a denormalized index alongside? If deprecated, this plan should include a migration task; if kept, document the canonical reading order so renderers and content producers don't drift.
+2. **`executiveSummary` (Phase B, article-level bullets) vs `editorial.explainer` (existing contentBlock with title / body / keyPoints).** Both are "here are the key points." Without an editorial style note explaining when to use which, content producers will mix them. Add a short editor admin note or schema description before Task 4.
+
 ---
 
 ## File structure
