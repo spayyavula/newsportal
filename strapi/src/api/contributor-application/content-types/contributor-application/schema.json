@@ -1,0 +1,51 @@
+{
+  "kind": "collectionType",
+  "collectionName": "contributor_applications",
+  "info": {
+    "singularName": "contributor-application",
+    "pluralName": "contributor-applications",
+    "displayName": "Contributor Application",
+    "description": "Reader application to join the community-contributor program"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "email": {
+      "type": "string",
+      "required": true
+    },
+    "displayName": {
+      "type": "string",
+      "required": true
+    },
+    "pitch": {
+      "type": "text",
+      "required": true
+    },
+    "priorWriting": {
+      "type": "text"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["pending", "approved", "rejected"],
+      "default": "pending",
+      "required": true
+    },
+    "reviewNote": {
+      "type": "text"
+    },
+    "submittedAt": {
+      "type": "datetime",
+      "required": true
+    },
+    "reviewedAt": {
+      "type": "datetime"
+    }
+  }
+}

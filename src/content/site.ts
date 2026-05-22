@@ -111,6 +111,8 @@ export type Article = {
   featured: boolean;
   deepDive: boolean;
   format: ArticleFormat;
+  sourceType: "staff" | "community";
+  contributorByline?: string;
   executiveSummary?: string[];
   leadExhibit?: ChartExhibit;
   sourceNotes?: SourceNote[];
@@ -122,6 +124,7 @@ export type Article = {
 export const navigation = [
   { href: "/assistant", label: "Assistant" },
   { href: "/articles", label: "Articles" },
+  { href: "/voices", label: "Voices" },
   { href: "/authors", label: "Authors" },
   { href: "/topics", label: "Topics" },
   { href: "/about", label: "About" },
@@ -708,6 +711,7 @@ export const articles: Article[] = [
     featured: true,
     deepDive: false,
     format: "data-led",
+    sourceType: "staff",
     executiveSummary: [
       "The largest service cuts land off-peak, hitting riders with irregular shifts first.",
       "Total service hours are 'maintained' on paper but average frequency drops on three lines.",
@@ -760,6 +764,7 @@ export const articles: Article[] = [
     featured: false,
     deepDive: true,
     format: "data-led",
+    sourceType: "staff",
     executiveSummary: [
       "Resilience spending only reduces outage duration where capital plans actually fund transformer replacement.",
       "Tier 1 neighborhoods saw a 51% reduction in mean outage duration over 5 years; Tier 3 saw an 11% increase.",
@@ -808,6 +813,7 @@ export const articles: Article[] = [
     featured: false,
     deepDive: false,
     format: "data-led",
+    sourceType: "staff",
     executiveSummary: [
       "Headline wage growth is up 3.1% for the top decile and down 2.6% for the bottom decile, inflation-adjusted.",
       "Rent, care, and transport costs broke the headline average for renter households.",
@@ -853,6 +859,7 @@ export const articles: Article[] = [
     featured: false,
     deepDive: false,
     format: "data-led",
+    sourceType: "staff",
     executiveSummary: [
       "Chronic absenteeism varies by 13 points across districts within the same state.",
       "Health-related absences account for roughly 40% of the difference between top and bottom districts.",

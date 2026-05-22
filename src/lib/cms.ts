@@ -66,7 +66,16 @@ type StrapiEntity = Record<string, unknown> & {
 type QueryOptions = {
   preview?: boolean;
   fallbackToLocal?: boolean;
+  includeCommunity?: boolean;
 };
+
+function filterByCommunityVisibility(
+  articles: Article[],
+  options: QueryOptions,
+): Article[] {
+  if (options.includeCommunity) return articles;
+  return articles.filter((article) => article.sourceType !== "community");
+}
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL ?? process.env.STRAPI_URL;
 const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN;
@@ -441,6 +450,8 @@ function mapArticle(entity: StrapiEntity): Article | null {
   const featured = entity.featured;
   const deepDive = entity.deepDive;
   const formatRaw = entity.format;
+  const sourceTypeRaw = entity.sourceType;
+  const contributorBylineRaw = entity.contributorByline;
   const executiveSummaryRaw = entity.executiveSummary;
   const leadExhibitRaw = entity.leadExhibit;
   const sourceNotesRaw = entity.sourceNotes;
@@ -478,6 +489,9 @@ function mapArticle(entity: StrapiEntity): Article | null {
     featured: typeof featured === "boolean" ? featured : fallback!.featured,
     deepDive: typeof deepDive === "boolean" ? deepDive : (fallback?.deepDive ?? false),
     format: formatRaw === "light" ? "light" : "data-led",
+    sourceType: sourceTypeRaw === "community" ? "community" : "staff",
+    contributorByline:
+      typeof contributorBylineRaw === "string" ? contributorBylineRaw : undefined,
     executiveSummary: Array.isArray(executiveSummaryRaw)
       ? executiveSummaryRaw
           .map((entry) =>
@@ -515,12 +529,12 @@ export async function getArticles(options: QueryOptions = {}) {
   );
 
   if (!response?.data?.length) {
-    return sortArticles(fallbackArticles);
+    return filterByCommunityVisibility(sortArticles(fallbackArticles), options);
   }
 
   const mapped = response.data.map(mapArticle).filter((item): item is Article => Boolean(item));
-
-  return mapped.length > 0 ? sortArticles(mapped) : sortArticles(fallbackArticles);
+  const sorted = mapped.length > 0 ? sortArticles(mapped) : sortArticles(fallbackArticles);
+  return filterByCommunityVisibility(sorted, options);
 }
 
 export async function getFeaturedArticle(options: QueryOptions = {}) {
@@ -541,6 +555,20 @@ export async function getArticleBySlug(slug: string, options: QueryOptions = {})
   }
 
   return options.fallbackToLocal === false ? null : fallbackArticleBySlug(slug);
+}
+
+export async function getVoices(options: QueryOptions = {}): Promise<Article[]> {
+  const allArticles = await getArticles({ ...options, includeCommunity: true });
+  return allArticles.filter((article) => article.sourceType === "community");
+}
+
+export async function getVoiceBySlug(
+  slug: string,
+  options: QueryOptions = {},
+): Promise<Article | null> {
+  const article = await getArticleBySlug(slug, { ...options, includeCommunity: true });
+  if (!article || article.sourceType !== "community") return null;
+  return article;
 }
 
 export async function getTopics(options: QueryOptions = {}) {
@@ -632,13 +660,17 @@ export async function getArticlesByTopic(slug: string, options: QueryOptions = {
   );
 
   if (!response?.data?.length) {
-    return sortArticles(fallbackArticles.filter((article) => article.topic.slug === slug));
+    return filterByCommunityVisibility(
+      sortArticles(fallbackArticles.filter((article) => article.topic.slug === slug)),
+      options,
+    );
   }
 
   const mapped = response.data.map(mapArticle).filter((item): item is Article => Boolean(item));
-  return mapped.length > 0
+  const sorted = mapped.length > 0
     ? sortArticles(mapped)
     : sortArticles(fallbackArticles.filter((article) => article.topic.slug === slug));
+  return filterByCommunityVisibility(sorted, options);
 }
 
 export async function getHomepageData(options: QueryOptions = {}) {

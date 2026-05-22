@@ -1,0 +1,65 @@
+<h2>Where does the featured story live?</h2>
+<p class="subtitle">Today it's in the hero card, the "Featured Reporting" panel, and the Latest Articles list. Pick the new placement.</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="hero-only" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="background:#fff;border:1px solid #e5e5e5;padding:10px;font-size:10px;line-height:1.4;color:#333">
+        <div style="background:#f8f5ef;border:1px solid #e8e3d8;padding:8px;border-radius:4px;font-size:9px"><strong>Today's editorial focus</strong> · Featured headline · summary…</div>
+        <div style="margin-top:6px;padding:6px;background:#fafafa;font-size:8px;color:#888;text-align:center">[ Featured Reporting panel — REMOVED ]</div>
+        <div style="margin-top:6px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+          <div style="background:#f5f5f5;padding:4px;font-size:8px">Latest #1 (not featured)</div>
+          <div style="background:#f5f5f5;padding:4px;font-size:8px">Latest #2</div>
+          <div style="background:#f5f5f5;padding:4px;font-size:8px">Latest #3</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. Hero only</h3>
+      <p>Featured lives in the hero card. Delete the "Featured Reporting" panel. Latest Articles excludes the featured one. Simplest cut — featured appears exactly once.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="anchor-plus-context" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="background:#fff;border:1px solid #e5e5e5;padding:10px;font-size:10px;line-height:1.4;color:#333">
+        <div style="background:#f8f5ef;border:1px solid #e8e3d8;padding:8px;border-radius:4px;font-size:9px"><strong>Anchor story</strong> · The headline that matters most today</div>
+        <div style="margin-top:6px;display:grid;grid-template-columns:2fr 1fr;gap:6px">
+          <div style="background:#fafafa;padding:6px;font-size:9px;border:1px solid #eee"><strong>Featured Reporting:</strong> deep dive (different article)</div>
+          <div style="background:#fafafa;padding:6px;font-size:9px;border:1px solid #eee">Daily Brief</div>
+        </div>
+        <div style="margin-top:6px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+          <div style="background:#f5f5f5;padding:4px;font-size:8px">Latest #1</div>
+          <div style="background:#f5f5f5;padding:4px;font-size:8px">Latest #2</div>
+          <div style="background:#f5f5f5;padding:4px;font-size:8px">Latest #3</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. Hero = anchor story; Featured Reporting = different deep dive</h3>
+      <p>Hero shows today's lead. The "Featured Reporting" panel surfaces a <em>second, different</em> story — the deep-dive/explainer of the week. Requires a flag in CMS to mark "deep dive" separately from "featured".</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="panel-only" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="background:#fff;border:1px solid #e5e5e5;padding:10px;font-size:10px;line-height:1.4;color:#333">
+        <div style="background:#f5f5f5;padding:8px;font-size:9px;color:#666;text-align:center">[ Hero kept lean — value prop only, no featured story ]</div>
+        <div style="margin-top:6px;background:#fafafa;padding:8px;font-size:9px;border:1px solid #eee"><strong>Featured Reporting</strong> · Full story-feature panel with sources list</div>
+        <div style="margin-top:6px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+          <div style="background:#f5f5f5;padding:4px;font-size:8px">Latest #1 (not featured)</div>
+          <div style="background:#f5f5f5;padding:4px;font-size:8px">Latest #2</div>
+          <div style="background:#f5f5f5;padding:4px;font-size:8px">Latest #3</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. Featured panel only (lean hero)</h3>
+      <p>Hero keeps the value prop + CTAs but no story. Featured Reporting panel becomes the single home of the lead piece, with its richer sources/explainer treatment. Lower hero impact for cold readers.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:18px">Click a card or describe a custom approach in the terminal.</p>

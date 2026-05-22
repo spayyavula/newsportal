@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"tasklist /FI \\\"IMAGENAME eq node.exe\\\" 2>nul; tasklist /FI \\\"IMAGENAME eq npm.exe\\\" 2>nul\",\"description\":\"Check for running node/npm processes\"}",
+  "error": "Exit code 1",
+  "timestamp": "2026-05-22T00:33:26.701Z",
+  "retry_count": 1
+}

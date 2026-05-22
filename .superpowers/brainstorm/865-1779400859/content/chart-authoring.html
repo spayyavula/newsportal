@@ -1,0 +1,55 @@
+<h2>How do exhibits / charts get authored?</h2>
+<p class="subtitle">McKinsey-style articles lead with charts. Three workflows differ a lot in implementation cost and editorial flexibility.</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="image-upload" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="background:#fff;border:1px solid #e5e5e5;padding:10px;font-size:10px;line-height:1.4;color:#333">
+        <div style="font-size:9px;color:#888;text-transform:uppercase">Exhibit 3</div>
+        <div style="background:#f0f0f0;border:1px dashed #ccc;height:80px;display:flex;align-items:center;justify-content:center;color:#999;font-size:9px;margin:4px 0">[ uploaded PNG / SVG chart ]</div>
+        <div style="font-size:9px"><strong>Rent burden by income decile, 2024</strong></div>
+        <div style="font-size:8px;color:#666">Source: Federal Reserve, ACS 2024</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. Image upload (PNG / SVG)</h3>
+      <p>Journalist makes the chart in their preferred tool (Excel, Datawrapper, Figma), exports an image, uploads to Strapi. New <code>editorial.exhibit</code> block: image + caption + source note + figure number. Simplest schema. No chart code. Charts are not interactive, do not respond to dark mode, and can't be regenerated when data updates.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="data-driven" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="background:#fff;border:1px solid #e5e5e5;padding:10px;font-size:10px;line-height:1.4;color:#333">
+        <div style="font-size:9px;color:#888;text-transform:uppercase">Exhibit 3</div>
+        <div style="background:#fff;border:1px solid #e0e0e0;height:80px;padding:6px;font-size:8px;margin:4px 0">
+          <svg viewBox="0 0 100 40" style="width:100%;height:100%"><polyline points="0,30 20,28 40,22 60,18 80,12 100,8" stroke="#c4a662" fill="none" stroke-width="1.5"/><line x1="0" y1="38" x2="100" y2="38" stroke="#ccc" stroke-width="0.3"/></svg>
+        </div>
+        <div style="font-size:9px"><strong>Rent burden by income decile, 2024</strong></div>
+        <div style="font-size:8px;color:#666">Source: Federal Reserve, ACS 2024</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. Structured chart config in Strapi</h3>
+      <p><code>editorial.chart</code> block stores chart type (line / bar / area), JSON data series, axis labels, and source note. Rendered on the page via a chart library (Recharts or Observable Plot). Charts respect site typography, dark mode, and screen-reader accessibility. Schema is much heavier; authoring requires structured data entry (or a CSV upload + parser).</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="hybrid" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="background:#fff;border:1px solid #e5e5e5;padding:10px;font-size:10px;line-height:1.4;color:#333">
+        <div style="font-size:9px;color:#888;text-transform:uppercase">Exhibit 3</div>
+        <div style="background:#f0f0f0;border:1px dashed #ccc;height:50px;display:flex;align-items:center;justify-content:center;color:#999;font-size:8px;margin:4px 0">[ uploaded PNG / SVG ]</div>
+        <div style="background:#fafafa;border-left:2px solid #c4a662;padding:4px 6px;margin-top:4px;font-size:8px"><strong>Key stat:</strong> 41% of bottom-decile renters spend &gt;50% of income on rent</div>
+        <div style="font-size:8px;color:#666;margin-top:3px">Source: Federal Reserve, ACS 2024</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. Hybrid — image exhibits + structured key-stat blocks</h3>
+      <p>Charts stay as uploaded images (simple). But add a separate <code>editorial.key-stat</code> block: a single big number + one-sentence explanation + source. The data-spine feel comes from key-stat callouts breaking up the prose, while exhibits are still images. Lower implementation cost than B; richer than A.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:18px">Click a card or describe a different authoring approach in the terminal.</p>

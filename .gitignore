@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# playwright e2e
+/test-results/
+/playwright-report/
+/playwright/.cache/
+
+# tooling artifacts (omc / superpowers session state)
+.omc/
+.superpowers/
