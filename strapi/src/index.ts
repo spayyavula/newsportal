@@ -433,10 +433,65 @@ const articleSeed: ArticleSeed[] = [
   },
 ];
 
+// Allow-list of public-role permissions to grant idempotently on every boot.
+// Keep this in sync with new content types as Phase B/C/Spec 3 land:
+// - Read-facing surfaces get `find` and `findOne`.
+// - Write-only surfaces (e.g., article-feedback in Phase B) get only the actions
+//   the public should perform. Don't add `find` to anything readers shouldn't list.
+const PUBLIC_PERMISSIONS: Array<{ uid: string; actions: string[] }> = [
+  { uid: 'api::article.article', actions: ['find', 'findOne'] },
+  { uid: 'api::author.author', actions: ['find', 'findOne'] },
+  { uid: 'api::topic.topic', actions: ['find', 'findOne'] },
+  { uid: 'api::daily-brief.daily-brief', actions: ['find', 'findOne'] },
+  // Phase B (uncomment when schemas land):
+  // { uid: 'api::chart-exhibit.chart-exhibit', actions: ['find', 'findOne'] },
+  // { uid: 'api::article-feedback.article-feedback', actions: ['create'] },
+  // Phase C:
+  // { uid: 'api::podcast-recommendation.podcast-recommendation', actions: ['find', 'findOne'] },
+];
+
+async function ensurePublicPermissions(strapi: Core.Strapi) {
+  const publicRole = await strapi.db
+    .query('plugin::users-permissions.role')
+    .findOne({ where: { type: 'public' } });
+
+  if (!publicRole) {
+    strapi.log.warn(
+      '[bootstrap] Public users-permissions role not found; skipping permission grants.',
+    );
+    return;
+  }
+
+  const allContentTypes = Object.keys(strapi.contentTypes);
+
+  for (const entry of PUBLIC_PERMISSIONS) {
+    if (!allContentTypes.includes(entry.uid)) {
+      // Content type not yet created; skip silently. Next deploy after schema lands picks it up.
+      continue;
+    }
+
+    for (const action of entry.actions) {
+      const actionString = `${entry.uid}.${action}`;
+      const existing = await strapi.db
+        .query('plugin::users-permissions.permission')
+        .findOne({ where: { action: actionString, role: publicRole.id } });
+
+      if (existing) continue;
+
+      await strapi.db.query('plugin::users-permissions.permission').create({
+        data: { action: actionString, role: publicRole.id },
+      });
+      strapi.log.info(`[bootstrap] Granted public role: ${actionString}`);
+    }
+  }
+}
+
 export default {
   register() {},
 
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
+    await ensurePublicPermissions(strapi);
+
     const topicDocumentIds = new Map<string, string>();
     const authorDocumentIds = new Map<string, string>();
 
