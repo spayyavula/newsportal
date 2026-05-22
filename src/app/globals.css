@@ -1863,3 +1863,22 @@ a:hover {
   border-radius: 2px;
   max-width: 38rem;
 }
+
+.deep-dive-summary-preview {
+  margin: 0.5rem 0 1rem;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #222;
+}
+
+.deep-dive-summary-more {
+  list-style: none;
+  margin-left: -1.25rem;
+  font-style: italic;
+  color: #666;
+}
