@@ -499,6 +499,13 @@ export default {
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     await ensurePublicPermissions(strapi);
 
+    if (process.env.STRAPI_SEED_ON_BOOT !== 'true') {
+      strapi.log.info(
+        '[bootstrap] STRAPI_SEED_ON_BOOT not set to "true"; skipping topic/author/article seed.',
+      );
+      return;
+    }
+
     const topicDocumentIds = new Map<string, string>();
     const authorDocumentIds = new Map<string, string>();
 
