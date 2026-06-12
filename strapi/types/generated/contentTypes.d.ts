@@ -430,6 +430,42 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiArticleFeedbackArticleFeedback
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'article_feedbacks';
+  info: {
+    description: "Private 'Was this clear?' reader feedback";
+    displayName: 'Article Feedback';
+    pluralName: 'article-feedbacks';
+    singularName: 'article-feedback';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    article: Schema.Attribute.Relation<'manyToOne', 'api::article.article'>;
+    articleSlug: Schema.Attribute.String & Schema.Attribute.Required;
+    clarity: Schema.Attribute.Enumeration<['yes', 'no']> &
+      Schema.Attribute.Required;
+    comment: Schema.Attribute.Text;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::article-feedback.article-feedback'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    submittedAt: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    userAgent: Schema.Attribute.String;
+  };
+}
+
 export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
   collectionName: 'articles';
   info: {
@@ -445,14 +481,32 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
     author: Schema.Attribute.Relation<'manyToOne', 'api::author.author'>;
     body: Schema.Attribute.RichText & Schema.Attribute.Required;
     contentBlocks: Schema.Attribute.DynamicZone<
-      ['editorial.section-block', 'editorial.pull-quote', 'editorial.explainer']
+      [
+        'editorial.section-block',
+        'editorial.pull-quote',
+        'editorial.explainer',
+        'editorial.exhibit-reference',
+      ]
     >;
+    contributorByline: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    deepDive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    executiveSummary: Schema.Attribute.Component<
+      'editorial.summary-bullet',
+      true
+    >;
     featured: Schema.Attribute.Boolean &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<false>;
+    format: Schema.Attribute.Enumeration<['data-led', 'light']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'data-led'>;
+    leadExhibit: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::chart-exhibit.chart-exhibit'
+    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -463,7 +517,11 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
     publishedOn: Schema.Attribute.DateTime & Schema.Attribute.Required;
     readTime: Schema.Attribute.String & Schema.Attribute.Required;
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    sourceNotes: Schema.Attribute.Component<'editorial.source-note', true>;
     sources: Schema.Attribute.JSON & Schema.Attribute.Required;
+    sourceType: Schema.Attribute.Enumeration<['staff', 'community']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'staff'>;
     storyType: Schema.Attribute.Enumeration<
       ['reporting', 'analysis', 'opinion']
     > &
@@ -512,6 +570,135 @@ export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
     role: Schema.Attribute.String & Schema.Attribute.Required;
     slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
     tips: Schema.Attribute.Relation<'oneToMany', 'api::tip.tip'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiChartExhibitChartExhibit
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'chart_exhibits';
+  info: {
+    description: 'A reusable data exhibit (chart + caption + source note) referenced by articles';
+    displayName: 'Chart Exhibit';
+    pluralName: 'chart-exhibits';
+    singularName: 'chart-exhibit';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    chartType: Schema.Attribute.Enumeration<
+      ['line', 'bar', 'area', 'dot', 'stackedBar']
+    > &
+      Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    figureNumber: Schema.Attribute.Integer & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::chart-exhibit.chart-exhibit'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    series: Schema.Attribute.JSON & Schema.Attribute.Required;
+    sourceNote: Schema.Attribute.String & Schema.Attribute.Required;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    xAxisLabel: Schema.Attribute.String;
+    yAxisLabel: Schema.Attribute.String;
+  };
+}
+
+export interface ApiContributorApplicationContributorApplication
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'contributor_applications';
+  info: {
+    description: 'Reader application to join the community-contributor program';
+    displayName: 'Contributor Application';
+    pluralName: 'contributor-applications';
+    singularName: 'contributor-application';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    displayName: Schema.Attribute.String & Schema.Attribute.Required;
+    email: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::contributor-application.contributor-application'
+    > &
+      Schema.Attribute.Private;
+    pitch: Schema.Attribute.Text & Schema.Attribute.Required;
+    priorWriting: Schema.Attribute.Text;
+    publishedAt: Schema.Attribute.DateTime;
+    reviewedAt: Schema.Attribute.DateTime;
+    reviewNote: Schema.Attribute.Text;
+    status: Schema.Attribute.Enumeration<['pending', 'approved', 'rejected']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'pending'>;
+    submittedAt: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
+export interface ApiDailyBriefDailyBrief extends Struct.CollectionTypeSchema {
+  collectionName: 'daily_briefs';
+  info: {
+    description: 'A low-noise homepage briefing \u2014 three developments, one fact-check, one explainer';
+    displayName: 'Daily Brief';
+    pluralName: 'daily-briefs';
+    singularName: 'daily-brief';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    developments: Schema.Attribute.Component<'editorial.brief-item', true> &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 3;
+          min: 3;
+        },
+        number
+      >;
+    explainer: Schema.Attribute.Component<'editorial.brief-item', false> &
+      Schema.Attribute.Required;
+    factCheck: Schema.Attribute.Component<'editorial.brief-item', false> &
+      Schema.Attribute.Required;
+    headline: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::daily-brief.daily-brief'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    publishedOn: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    recommendedListen: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::podcast-recommendation.podcast-recommendation'
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -606,6 +793,43 @@ export interface ApiNotificationRuleNotificationRule
     >;
     publishedAt: Schema.Attribute.DateTime;
     timezone: Schema.Attribute.String & Schema.Attribute.DefaultTo<'UTC'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPodcastRecommendationPodcastRecommendation
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'podcast_recommendations';
+  info: {
+    description: 'Curated external podcast pick, surfaced on topic pages and optionally in the Daily Brief';
+    displayName: 'Podcast Recommendation';
+    pluralName: 'podcast-recommendations';
+    singularName: 'podcast-recommendation';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    durationMinutes: Schema.Attribute.Integer & Schema.Attribute.Required;
+    episodeTitle: Schema.Attribute.String & Schema.Attribute.Required;
+    host: Schema.Attribute.String;
+    listenUrl: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::podcast-recommendation.podcast-recommendation'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    publishedOn: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    showName: Schema.Attribute.String & Schema.Attribute.Required;
+    summary: Schema.Attribute.Text & Schema.Attribute.Required;
+    topic: Schema.Attribute.Relation<'manyToOne', 'api::topic.topic'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1181,6 +1405,10 @@ export interface PluginUsersPermissionsUser
     timestamps: true;
   };
   attributes: {
+    bio: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 600;
+      }>;
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     confirmationToken: Schema.Attribute.String & Schema.Attribute.Private;
     confirmed: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
@@ -1233,10 +1461,15 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::article-feedback.article-feedback': ApiArticleFeedbackArticleFeedback;
       'api::article.article': ApiArticleArticle;
       'api::author.author': ApiAuthorAuthor;
+      'api::chart-exhibit.chart-exhibit': ApiChartExhibitChartExhibit;
+      'api::contributor-application.contributor-application': ApiContributorApplicationContributorApplication;
+      'api::daily-brief.daily-brief': ApiDailyBriefDailyBrief;
       'api::filter-preset.filter-preset': ApiFilterPresetFilterPreset;
       'api::notification-rule.notification-rule': ApiNotificationRuleNotificationRule;
+      'api::podcast-recommendation.podcast-recommendation': ApiPodcastRecommendationPodcastRecommendation;
       'api::reader-profile.reader-profile': ApiReaderProfileReaderProfile;
       'api::tip.tip': ApiTipTip;
       'api::topic.topic': ApiTopicTopic;
