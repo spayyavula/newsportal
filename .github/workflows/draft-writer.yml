@@ -22,6 +22,13 @@ jobs:
             echo "DRAFT_WRITER_SECRET secret is not set" >&2
             exit 1
           fi
+          case "${DRAFT_WRITER_URL}" in
+            https://*) ;;
+            *)
+              echo "DRAFT_WRITER_URL must be a bare https:// URL (no 'DRAFT_WRITER_URL=' prefix, quotes, or whitespace). Got: '${DRAFT_WRITER_URL}'" >&2
+              exit 1
+              ;;
+          esac
           curl --fail --silent --show-error \
             -X POST \
             -H "Authorization: Bearer ${DRAFT_WRITER_SECRET}" \
